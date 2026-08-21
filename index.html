@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Veggie Garden Planner</title>
+<link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<header class="app-header">
+  <h1>🌱 Veggie Garden Planner</h1>
+  <p class="subtitle">Plan garden beds, check what will actually thrive at your site, and get a succession-planting calendar for continuous harvests.</p>
+</header>
+
+<nav class="tabs" id="tabs">
+  <button class="tab-btn active" data-tab="location">1. Location & Site</button>
+  <button class="tab-btn" data-tab="layout">2. Garden Layout</button>
+  <button class="tab-btn" data-tab="wishlist">3. What to Grow</button>
+  <button class="tab-btn" data-tab="results">4. Feasibility & Calendar</button>
+  <button class="tab-btn" data-tab="visualize">5. Bed Visualization</button>
+  <button class="tab-btn" data-tab="sensors">6. Live Sensors (future)</button>
+</nav>
+
+<main>
+  <!-- 1. LOCATION -->
+  <section class="tab-panel active" id="tab-location">
+    <h2>Where's your garden?</h2>
+    <div class="row">
+      <input type="text" id="locationSearch" placeholder="City, address, or ZIP" />
+      <button id="locationSearchBtn">Search</button>
+    </div>
+    <ul id="locationResults" class="result-list"></ul>
+    <div id="locationSummary" class="summary-card hidden"></div>
+
+    <div class="card">
+      <h3>Soil</h3>
+      <p class="muted">Auto-fetched from ISRIC SoilGrids for your coordinates. You can override it below if you've had your soil tested.</p>
+      <div id="soilSummary" class="summary-card hidden"></div>
+      <div class="row">
+        <label>Manual pH override <input type="number" step="0.1" id="manualPh" placeholder="e.g. 6.4" /></label>
+        <label>Texture
+          <select id="manualTexture">
+            <option value="">(use auto)</option>
+            <option value="sandy">Sandy</option>
+            <option value="loam">Loam</option>
+            <option value="silty loam">Silty loam</option>
+            <option value="clay loam">Clay loam</option>
+            <option value="clay">Clay</option>
+          </select>
+        </label>
+        <button id="applyManualSoil">Apply override</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. LAYOUT -->
+  <section class="tab-panel" id="tab-layout">
+    <h2>Draw your garden</h2>
+    <p class="muted">Set a scale first (draw a line along something of known length, e.g. your garden's edge), then draw beds as rectangles or freehand shapes. Click a bed to select it and set its sun exposure.</p>
+    <div class="toolbar">
+      <button id="modeScale" class="tool-btn">📏 Set scale</button>
+      <button id="modeRect" class="tool-btn">▭ Rectangle bed</button>
+      <button id="modePolygon" class="tool-btn">⬠ Freehand bed (click points, dbl-click/Enter to finish)</button>
+      <button id="modeSelect" class="tool-btn active">↖ Select</button>
+      <span id="scaleReadout" class="muted"></span>
+    </div>
+    <canvas id="gardenCanvas" width="900" height="560"></canvas>
+
+    <div id="bedEditor" class="card hidden">
+      <h3 id="bedEditorTitle">Bed</h3>
+      <div class="row">
+        <label>Name <input type="text" id="bedName" /></label>
+        <label>Sun exposure
+          <select id="bedSun">
+            <option value="full_sun">Full sun (6+ hrs)</option>
+            <option value="part_sun">Part sun (4-6 hrs)</option>
+            <option value="shade">Shade (&lt;4 hrs)</option>
+          </select>
+        </label>
+        <label>Soil pH override <input type="number" step="0.1" id="bedPh" /></label>
+        <button id="deleteBedBtn" class="danger">Delete bed</button>
+      </div>
+    </div>
+
+    <ul id="bedList" class="result-list"></ul>
+  </section>
+
+  <!-- 3. WISHLIST -->
+  <section class="tab-panel" id="tab-wishlist">
+    <h2>What do you want to grow?</h2>
+    <div class="row">
+      <label>Plant
+        <select id="plantPicker"></select>
+      </label>
+      <label>Harvest from
+        <select id="wishStartMonth"></select>
+      </label>
+      <label>through
+        <select id="wishEndMonth"></select>
+      </label>
+      <label>Quantity <input type="number" min="1" id="wishQty" placeholder="fill bed" /></label>
+      <button id="addWishBtn">Add to wishlist</button>
+    </div>
+    <ul id="wishlistItems" class="result-list"></ul>
+  </section>
+
+  <!-- 4. RESULTS -->
+  <section class="tab-panel" id="tab-results">
+    <h2>Feasibility & planting calendar</h2>
+    <p class="muted">Based on your site's frost dates, temperatures, and soil, here's what's realistic and when to plant it (including successive plantings for continuous harvest).</p>
+    <button id="runFeasibilityBtn">Calculate</button>
+    <div id="feasibilityResults"></div>
+  </section>
+
+  <!-- 5. VISUALIZE -->
+  <section class="tab-panel" id="tab-visualize">
+    <h2>Populate a bed</h2>
+    <div class="row">
+      <label>Bed <select id="vizBedPicker"></select></label>
+      <button id="autoPopulateBtn">Auto-fill from wishlist</button>
+    </div>
+    <canvas id="vizCanvas" width="900" height="560"></canvas>
+    <div id="vizLegend" class="legend"></div>
+    <div id="vizPlantInfo"></div>
+  </section>
+
+  <!-- 6. SENSORS -->
+  <section class="tab-panel" id="tab-sensors">
+    <h2>Live sensors (future work)</h2>
+    <p class="muted">
+      Not connected to hardware yet. This panel stores config for ESPHome sensor
+      nodes (sun/light and soil moisture) so that once real devices are on your
+      network, readings can replace the manual sun-exposure and soil settings
+      above. See <code>js/esphome.js</code> for the integration plan.
+    </p>
+    <div class="row">
+      <label>Name <input type="text" id="deviceName" placeholder="e.g. Raised bed #1 node" /></label>
+      <label>Bed <select id="deviceBedPicker"></select></label>
+      <label>Base URL <input type="text" id="deviceUrl" placeholder="http://192.168.1.42" /></label>
+      <label>Sun sensor entity <input type="text" id="deviceSunEntity" placeholder="lux_sensor" /></label>
+      <label>Soil moisture entity <input type="text" id="deviceMoistureEntity" placeholder="soil_moisture" /></label>
+      <button id="addDeviceBtn">Add device</button>
+    </div>
+    <ul id="deviceList" class="result-list"></ul>
+  </section>
+</main>
+
+<footer class="app-footer">
+  <button id="resetAllBtn" class="danger">Reset all data</button>
+  <span class="muted">Data is stored locally in your browser (localStorage).</span>
+</footer>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+[
+  {
+    "id": "tomato", "name": "Tomato", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "tender", "coolSeasonOnly": false, "perennial": false,
+    "daysToMaturity": 70, "harvestWindowDays": 90,
+    "plantingMethod": "transplant", "shoulderDays": 0, "minSoilTempF": 60,
+    "successionIntervalDays": null,
+    "sun": "full_sun", "phRange": [6.0, 6.8],
+    "spacingIn": 24, "rowSpacingIn": 36,
+    "yieldNote": "8-15 lbs per plant over the season (indeterminate types)"
+  },
+  {
+    "id": "pepper", "name": "Pepper (sweet/hot)", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "tender", "coolSeasonOnly": false, "perennial": false,
+    "daysToMaturity": 75, "harvestWindowDays": 80,
+    "plantingMethod": "transplant", "shoulderDays": 0, "minSoilTempF": 65,
+    "successionIntervalDays": null,
+    "sun": "full_sun", "phRange": [5.8, 6.8],
+    "spacingIn": 18, "rowSpacingIn": 24,
+    "yieldNote": "5-10 lbs per plant over the season"
+  },
+  {
+    "id": "cucumber", "name": "Cucumber", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "tender", "coolSeasonOnly": false, "perennial": false,
+    "daysToMaturity": 55, "harvestWindowDays": 35,
+    "plantingMethod": "direct", "shoulderDays": 0, "minSoilTempF": 65,
+    "successionIntervalDays": 21,
+    "sun": "full_sun", "phRange": [6.0, 6.8],
+    "spacingIn": 12, "rowSpacingIn": 36,
+    "yieldNote": "Trellised; ~10 fruit per plant per flush"
+  },
+  {
+    "id": "zucchini", "name": "Zucchini / Summer Squash", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "tender", "coolSeasonOnly": false, "perennial": false,
+    "daysToMaturity": 50, "harvestWindowDays": 45,
+    "plantingMethod": "direct", "shoulderDays": 0, "minSoilTempF": 65,
+    "successionIntervalDays": 28,
+    "sun": "full_sun", "phRange": [6.0, 6.8],
+    "spacingIn": 24, "rowSpacingIn": 36,
+    "yieldNote": "Very prolific; 1-2 plants often enough per household"
+  },
+  {
+    "id": "lettuce", "name": "Lettuce", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "hardy", "coolSeasonOnly": true, "perennial": false,
+    "daysToMaturity": 45, "harvestWindowDays": 14,
+    "plantingMethod": "direct", "shoulderDays": 21, "minSoilTempF": 40,
+    "successionIntervalDays": 14,
+    "sun": "part_sun", "phRange": [6.0, 7.0],
+    "spacingIn": 8, "rowSpacingIn": 12,
+    "yieldNote": "Bolts/turns bitter in sustained heat"
+  },
+  {
+    "id": "spinach", "name": "Spinach", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "hardy", "coolSeasonOnly": true, "perennial": false,
+    "daysToMaturity": 40, "harvestWindowDays": 20,
+    "plantingMethod": "direct", "shoulderDays": 28, "minSoilTempF": 35,
+    "successionIntervalDays": 14,
+    "sun": "part_sun", "phRange": [6.0, 7.0],
+    "spacingIn": 6, "rowSpacingIn": 12,
+    "yieldNote": "Cut-and-come-again; bolts in heat"
+  },
+  {
+    "id": "carrot", "name": "Carrot", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "hardy", "coolSeasonOnly": false, "perennial": false,
+    "daysToMaturity": 70, "harvestWindowDays": 21,
+    "plantingMethod": "direct", "shoulderDays": 21, "minSoilTempF": 45,
+    "successionIntervalDays": 21,
+    "sun": "full_sun", "phRange": [6.0, 6.8],
+    "spacingIn": 3, "rowSpacingIn": 12,
+    "yieldNote": "Loose, stone-free soil needed for straight roots"
+  },
+  {
+    "id": "radish", "name": "Radish", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "hardy", "coolSeasonOnly": true, "perennial": false,
+    "daysToMaturity": 25, "harvestWindowDays": 10,
+    "plantingMethod": "direct", "shoulderDays": 21, "minSoilTempF": 40,
+    "successionIntervalDays": 10,
+    "sun": "part_sun", "phRange": [6.0, 7.0],
+    "spacingIn": 2, "rowSpacingIn": 6,
+    "yieldNote": "Fastest crop; great for filling gaps"
+  },
+  {
+    "id": "beet", "name": "Beet", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "hardy", "coolSeasonOnly": false, "perennial": false,
+    "daysToMaturity": 55, "harvestWindowDays": 21,
+    "plantingMethod": "direct", "shoulderDays": 21, "minSoilTempF": 40,
+    "successionIntervalDays": 21,
+    "sun": "full_sun", "phRange": [6.0, 7.0],
+    "spacingIn": 4, "rowSpacingIn": 12,
+    "yieldNote": "Both roots and greens are edible"
+  },
+  {
+    "id": "broccoli", "name": "Broccoli", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "half_hardy", "coolSeasonOnly": true, "perennial": false,
+    "daysToMaturity": 65, "harvestWindowDays": 30,
+    "plantingMethod": "transplant", "shoulderDays": 14, "minSoilTempF": 45,
+    "successionIntervalDays": 21,
+    "sun": "full_sun", "phRange": [6.0, 7.0],
+    "spacingIn": 18, "rowSpacingIn": 24,
+    "yieldNote": "Main head then smaller side shoots for weeks"
+  },
+  {
+    "id": "kale", "name": "Kale", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "hardy", "coolSeasonOnly": false, "perennial": false,
+    "daysToMaturity": 55, "harvestWindowDays": 120,
+    "plantingMethod": "transplant", "shoulderDays": 21, "minSoilTempF": 40,
+    "successionIntervalDays": null,
+    "sun": "part_sun", "phRange": [6.0, 7.5],
+    "spacingIn": 18, "rowSpacingIn": 18,
+    "yieldNote": "Cut-and-come-again; sweeter after light frost"
+  },
+  {
+    "id": "bush_bean", "name": "Bush Bean", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "tender", "coolSeasonOnly": false, "perennial": false,
+    "daysToMaturity": 55, "harvestWindowDays": 21,
+    "plantingMethod": "direct", "shoulderDays": 0, "minSoilTempF": 60,
+    "successionIntervalDays": 21,
+    "sun": "full_sun", "phRange": [6.0, 6.8],
+    "spacingIn": 4, "rowSpacingIn": 18,
+    "yieldNote": "Succession every 2-3 weeks for steady supply"
+  },
+  {
+    "id": "pea", "name": "Pea", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "hardy", "coolSeasonOnly": true, "perennial": false,
+    "daysToMaturity": 60, "harvestWindowDays": 21,
+    "plantingMethod": "direct", "shoulderDays": 28, "minSoilTempF": 40,
+    "successionIntervalDays": 14,
+    "sun": "part_sun", "phRange": [6.0, 7.5],
+    "spacingIn": 3, "rowSpacingIn": 18,
+    "yieldNote": "Fails in summer heat; spring and fall crops only"
+  },
+  {
+    "id": "sweet_corn", "name": "Sweet Corn", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "tender", "coolSeasonOnly": false, "perennial": false,
+    "daysToMaturity": 75, "harvestWindowDays": 14,
+    "plantingMethod": "direct", "shoulderDays": 0, "minSoilTempF": 60,
+    "successionIntervalDays": 14,
+    "sun": "full_sun", "phRange": [6.0, 6.8],
+    "spacingIn": 12, "rowSpacingIn": 30,
+    "yieldNote": "Plant in blocks (not single rows) for pollination"
+  },
+  {
+    "id": "onion", "name": "Onion (bulb)", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "half_hardy", "coolSeasonOnly": false, "perennial": false,
+    "daysToMaturity": 100, "harvestWindowDays": 14,
+    "plantingMethod": "transplant", "shoulderDays": 21, "minSoilTempF": 40,
+    "successionIntervalDays": null,
+    "sun": "full_sun", "phRange": [6.0, 6.8],
+    "spacingIn": 4, "rowSpacingIn": 12,
+    "yieldNote": "Bulbing is daylength-sensitive; single bulk harvest"
+  },
+  {
+    "id": "garlic", "name": "Garlic", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "hardy", "coolSeasonOnly": false, "perennial": false, "overwinters": true,
+    "daysToMaturity": 300, "harvestWindowDays": 14,
+    "plantingMethod": "fall_cloves", "shoulderDays": 0, "minSoilTempF": 30,
+    "successionIntervalDays": null,
+    "sun": "full_sun", "phRange": [6.0, 7.0],
+    "spacingIn": 6, "rowSpacingIn": 12,
+    "yieldNote": "Plant cloves in autumn, harvest the following summer"
+  },
+  {
+    "id": "potato", "name": "Potato", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "half_hardy", "coolSeasonOnly": false, "perennial": false,
+    "daysToMaturity": 90, "harvestWindowDays": 14,
+    "plantingMethod": "seed_potato", "shoulderDays": 14, "minSoilTempF": 45,
+    "successionIntervalDays": null,
+    "sun": "full_sun", "phRange": [5.0, 6.5],
+    "spacingIn": 12, "rowSpacingIn": 30,
+    "yieldNote": "Hill soil around stems as they grow"
+  },
+  {
+    "id": "strawberry", "name": "Strawberry", "category": "fruit", "lifeCycle": "perennial",
+    "frostTolerance": "hardy", "coolSeasonOnly": false, "perennial": true, "typicalHarvestStartMonth": 6,
+    "daysToMaturity": 90, "harvestWindowDays": 90,
+    "plantingMethod": "crowns", "shoulderDays": 14, "minSoilTempF": 40,
+    "successionIntervalDays": null,
+    "sun": "full_sun", "phRange": [5.5, 6.8],
+    "spacingIn": 12, "rowSpacingIn": 24,
+    "yieldNote": "Everbearing types fruit first year; June-bearing need a season to establish"
+  },
+  {
+    "id": "blueberry", "name": "Blueberry", "category": "fruit", "lifeCycle": "perennial",
+    "frostTolerance": "hardy", "coolSeasonOnly": false, "perennial": true, "typicalHarvestStartMonth": 7,
+    "daysToMaturity": 730, "harvestWindowDays": 30,
+    "plantingMethod": "shrub", "shoulderDays": 14, "minSoilTempF": 40,
+    "successionIntervalDays": null,
+    "sun": "full_sun", "phRange": [4.5, 5.5],
+    "spacingIn": 48, "rowSpacingIn": 60,
+    "yieldNote": "Needs acidic soil; takes 2-3 years to reach full production"
+  },
+  {
+    "id": "basil", "name": "Basil", "category": "herb", "lifeCycle": "annual",
+    "frostTolerance": "tender", "coolSeasonOnly": false, "perennial": false,
+    "daysToMaturity": 60, "harvestWindowDays": 100,
+    "plantingMethod": "transplant", "shoulderDays": 0, "minSoilTempF": 60,
+    "successionIntervalDays": null,
+    "sun": "full_sun", "phRange": [6.0, 7.5],
+    "spacingIn": 10, "rowSpacingIn": 12,
+    "yieldNote": "Pinch flowers to keep leaf production going"
+  },
+  {
+    "id": "cabbage", "name": "Cabbage", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "half_hardy", "coolSeasonOnly": true, "perennial": false,
+    "daysToMaturity": 70, "harvestWindowDays": 14,
+    "plantingMethod": "transplant", "shoulderDays": 14, "minSoilTempF": 45,
+    "successionIntervalDays": 21,
+    "sun": "full_sun", "phRange": [6.0, 6.8],
+    "spacingIn": 18, "rowSpacingIn": 24,
+    "yieldNote": "One head per plant; stagger plantings for steady supply"
+  },
+  {
+    "id": "swiss_chard", "name": "Swiss Chard", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "hardy", "coolSeasonOnly": false, "perennial": false,
+    "daysToMaturity": 50, "harvestWindowDays": 120,
+    "plantingMethod": "direct", "shoulderDays": 14, "minSoilTempF": 40,
+    "successionIntervalDays": null,
+    "sun": "part_sun", "phRange": [6.0, 7.0],
+    "spacingIn": 8, "rowSpacingIn": 18,
+    "yieldNote": "Cut-and-come-again all season, more heat tolerant than spinach"
+  },
+  {
+    "id": "watermelon", "name": "Watermelon", "category": "fruit", "lifeCycle": "annual",
+    "frostTolerance": "tender", "coolSeasonOnly": false, "perennial": false,
+    "daysToMaturity": 85, "harvestWindowDays": 21,
+    "plantingMethod": "transplant", "shoulderDays": 0, "minSoilTempF": 70,
+    "successionIntervalDays": null,
+    "sun": "full_sun", "phRange": [6.0, 6.8],
+    "spacingIn": 36, "rowSpacingIn": 72,
+    "yieldNote": "Needs a long, warm season and lots of space"
+  },
+  {
+    "id": "eggplant", "name": "Eggplant", "category": "vegetable", "lifeCycle": "annual",
+    "frostTolerance": "tender", "coolSeasonOnly": false, "perennial": false,
+    "daysToMaturity": 75, "harvestWindowDays": 60,
+    "plantingMethod": "transplant", "shoulderDays": 0, "minSoilTempF": 65,
+    "successionIntervalDays": null,
+    "sun": "full_sun", "phRange": [5.8, 6.5],
+    "spacingIn": 24, "rowSpacingIn": 30,
+    "yieldNote": "4-6 fruit per plant over the season"
+  }
+]
