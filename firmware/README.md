@@ -10,3 +10,8 @@ nRF52832 firmware — not yet started. Planned stack: nRF Connect SDK
   does not decode glucose values itself)
 - Power management (sleep between polls, battery-friendly BLE connection
   intervals)
+
+See [`docs/miaomiao-ble-protocol.md`](docs/miaomiao-ble-protocol.md) for the
+reverse-engineered MiaoMiao BLE GATT protocol (service/characteristic UUIDs,
+commands, packet layout) — useful as a reference if we want this firmware to
+stay compatible with existing apps like xDrip+.
