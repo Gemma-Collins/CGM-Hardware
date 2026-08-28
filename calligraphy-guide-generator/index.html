@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calligraphy Guide Sheet Generator</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="app-header">
+    <h1>Calligraphy Guide Sheet Generator</h1>
+    <p>Build custom practice sheets from scratch, or trace over a photo of your own writing — then download a print-ready PDF.</p>
+  </header>
+
+  <div class="app-body">
+
+    <aside class="controls" id="controls">
+
+      <div class="mode-switch" role="tablist">
+        <button class="mode-btn active" data-mode="scratch" role="tab" aria-selected="true">From Scratch</button>
+        <button class="mode-btn" data-mode="photo" role="tab" aria-selected="false">Upload Photo</button>
+      </div>
+
+      <section class="panel">
+        <h2>Page Setup</h2>
+        <div class="field">
+          <label for="paperSize">Paper size</label>
+          <select id="paperSize">
+            <option value="letter">Letter (8.5 × 11 in)</option>
+            <option value="a4" selected>A4 (210 × 297 mm)</option>
+            <option value="legal">Legal (8.5 × 14 in)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="orientation">Orientation</label>
+          <select id="orientation">
+            <option value="portrait" selected>Portrait</option>
+            <option value="landscape">Landscape</option>
+          </select>
+        </div>
+        <div class="field row">
+          <div>
+            <label for="marginLR">Side margin (mm)</label>
+            <input type="number" id="marginLR" min="0" max="40" value="15">
+          </div>
+          <div>
+            <label for="marginTB">Top/bottom margin (mm)</label>
+            <input type="number" id="marginTB" min="0" max="40" value="15">
+          </div>
+        </div>
+      </section>
+
+      <!-- SCRATCH MODE PANEL -->
+      <section class="panel" id="scratchPanel">
+        <h2>Guide Style</h2>
+        <div class="field">
+          <label for="preset">Quick preset</label>
+          <select id="preset">
+            <option value="custom">Custom</option>
+            <option value="broadedge" selected>Broad-edge / Italic (4-line)</option>
+            <option value="copperplate">Copperplate / Pointed Pen (slant)</option>
+            <option value="simple">Simple ruled (baseline only)</option>
+          </select>
+        </div>
+
+        <div class="field row">
+          <div>
+            <label for="xHeight">x-height (mm)</label>
+            <input type="number" id="xHeight" min="2" max="40" value="7" step="0.5">
+          </div>
+          <div>
+            <label for="setSpacing">Space between sets (mm)</label>
+            <input type="number" id="setSpacing" min="0" max="40" value="10" step="0.5">
+          </div>
+        </div>
+
+        <div class="field row">
+          <div>
+            <label for="ascenderHeight">Ascender height (mm)</label>
+            <input type="number" id="ascenderHeight" min="0" max="40" value="7" step="0.5">
+          </div>
+          <div>
+            <label for="descenderHeight">Descender depth (mm)</label>
+            <input type="number" id="descenderHeight" min="0" max="40" value="7" step="0.5">
+          </div>
+        </div>
+
+        <div class="field checks">
+          <label><input type="checkbox" id="showAscender" checked> Ascender line</label>
+          <label><input type="checkbox" id="showWaist" checked> Waistline (x-height top)</label>
+          <label><input type="checkbox" id="showBaseline" checked> Baseline</label>
+          <label><input type="checkbox" id="showDescender" checked> Descender line</label>
+        </div>
+
+        <h2>Slant Guides</h2>
+        <div class="field checks">
+          <label><input type="checkbox" id="showSlant"> Show slant guide lines</label>
+        </div>
+        <div class="field row">
+          <div>
+            <label for="slantAngle">Slant angle (° from baseline)</label>
+            <input type="range" id="slantAngle" min="15" max="90" value="55">
+            <output id="slantAngleOut">55°</output>
+          </div>
+          <div>
+            <label for="slantSpacing">Slant line spacing (mm)</label>
+            <input type="number" id="slantSpacing" min="3" max="40" value="12" step="0.5">
+          </div>
+        </div>
+
+        <h2>Line Appearance</h2>
+        <div class="field row">
+          <div>
+            <label for="lineColor">Horizontal line color</label>
+            <input type="color" id="lineColor" value="#2f6fed">
+          </div>
+          <div>
+            <label for="slantColor">Slant line color</label>
+            <input type="color" id="slantColor" value="#9aa3af">
+          </div>
+        </div>
+        <div class="field">
+          <label for="pageCount">Number of pages</label>
+          <input type="number" id="pageCount" min="1" max="30" value="1">
+        </div>
+      </section>
+
+      <!-- PHOTO MODE PANEL -->
+      <section class="panel hidden" id="photoPanel">
+        <h2>Upload a Photo</h2>
+        <div class="field">
+          <label for="photoInput" class="file-label">Choose image…</label>
+          <input type="file" id="photoInput" accept="image/*">
+        </div>
+        <div class="field">
+          <label for="photoOpacity">Photo opacity</label>
+          <input type="range" id="photoOpacity" min="10" max="100" value="60">
+        </div>
+        <div class="field">
+          <label for="photoScale">Photo scale</label>
+          <input type="range" id="photoScale" min="10" max="300" value="100">
+        </div>
+        <div class="field">
+          <label for="photoRotation">Photo rotation (°)</label>
+          <input type="range" id="photoRotation" min="-180" max="180" value="0">
+        </div>
+        <button class="btn secondary" id="fitPhotoBtn" type="button">Fit &amp; Center Photo</button>
+        <p class="hint">Drag the photo on the preview to reposition it. Turn on guide lines below to overlay ruled/slant lines on top of your photo for tracing.</p>
+
+        <h2>Overlay Guide Lines</h2>
+        <div class="field checks">
+          <label><input type="checkbox" id="photoShowGuides" checked> Show guide lines over photo</label>
+        </div>
+      </section>
+
+      <button class="btn primary" id="downloadBtn" type="button">Download PDF</button>
+    </aside>
+
+    <main class="preview-wrap">
+      <div class="preview-toolbar">
+        <span id="pageInfo">Preview</span>
+      </div>
+      <div class="canvas-shell">
+        <canvas id="sheetCanvas"></canvas>
+      </div>
+    </main>
+
+  </div>
+
+  <footer class="app-footer">
+    <p>Everything runs in your browser — no photos or sheets are uploaded anywhere.</p>
+  </footer>
+</div>
+
+<script src="vendor-jspdf.umd.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

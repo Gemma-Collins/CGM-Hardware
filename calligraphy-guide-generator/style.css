@@ -1,0 +1,250 @@
+:root {
+  --ink: #1c2230;
+  --muted: #6b7280;
+  --line: #e2e5ea;
+  --accent: #2f6fed;
+  --accent-dark: #1f52b8;
+  --bg: #f4f6f9;
+  --panel-bg: #ffffff;
+  --radius: 10px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  padding: 20px 24px 8px;
+}
+
+.app-header h1 {
+  margin: 0 0 4px;
+  font-size: 1.4rem;
+}
+
+.app-header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+  gap: 20px;
+  padding: 12px 24px 24px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.controls {
+  flex: 0 0 320px;
+  max-width: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.mode-switch {
+  display: flex;
+  background: var(--panel-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.mode-btn {
+  flex: 1;
+  padding: 10px 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.mode-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.panel.hidden { display: none; }
+
+.panel h2 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin: 16px 0 10px;
+}
+
+.panel h2:first-child { margin-top: 0; }
+
+.field {
+  margin-bottom: 12px;
+}
+
+.field label {
+  display: block;
+  font-size: 0.82rem;
+  margin-bottom: 4px;
+  color: var(--ink);
+}
+
+.field input[type="number"],
+.field input[type="text"],
+.field select {
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font-size: 0.88rem;
+  background: #fff;
+  color: var(--ink);
+}
+
+.field input[type="range"] {
+  width: 100%;
+}
+
+.field input[type="color"] {
+  width: 100%;
+  height: 34px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+}
+
+.field.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.field.checks {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field.checks label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+output {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.file-label {
+  display: inline-block;
+  padding: 8px 12px;
+  background: #eef2ff;
+  border: 1px dashed var(--accent);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--accent-dark);
+}
+
+#photoInput { margin-top: 6px; width: 100%; font-size: 0.8rem; }
+
+.hint {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.btn {
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 8px;
+  border: none;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: var(--accent);
+  color: #fff;
+}
+
+.btn.primary:hover { background: var(--accent-dark); }
+
+.btn.secondary {
+  background: #f0f2f6;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  margin-bottom: 10px;
+}
+
+.btn.secondary:hover { background: #e6e9ef; }
+
+.preview-wrap {
+  flex: 1 1 480px;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.preview-toolbar {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.canvas-shell {
+  background: var(--panel-bg);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  overflow: auto;
+}
+
+#sheetCanvas {
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+  background: #fff;
+  touch-action: none;
+}
+
+.app-footer {
+  text-align: center;
+  padding: 10px;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+@media (max-width: 760px) {
+  .controls {
+    flex: 1 1 100%;
+    max-width: none;
+  }
+}
