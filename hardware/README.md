@@ -14,6 +14,8 @@ planning docs plus a place for you to create the project.
    - `NFC_Frontend.SchDoc` — CR95HF, NFC antenna matching network
    - `Power_Battery.SchDoc` — charger IC, LDO, USB-C input, battery connector
    - `RF_BLE.SchDoc` — BLE antenna + matching, if kept separate from MCU sheet
+   - `Display.SchDoc` — e-paper module SPI connection (v1 scope: relay +
+     on-device display, see top-level README)
 3. Add a blank `.PcbDoc` for the board layout once schematics are wired and
    footprints assigned.
 4. Pull in vendor libraries before placing parts:

@@ -11,4 +11,5 @@ BT1,Battery,LiPo cell,~100 mAh (match enclosure size),n/a,"Confirm capacity agai
 J1,Debug/programming,SWD header,Tag-Connect TC2030 or 0.05in header,n/a,"For flashing/debugging firmware"
 J2,Charge input,USB-C receptacle,TBD,SMD,"Feeds charger IC U3"
 D1,Status indicator,LED,generic,0603,"Charge/status indication"
+DISP1,Display,E-paper module,~1.5-2in partial-refresh e-paper (e.g. GoodDisplay/Waveshare SPI module),SPI module,"Low static power draw matches Libre's ~5min update cadence; driver IC usually integrated on module"
 R-various,Decoupling/support passives,Ceramic caps + resistors,per reference schematics,0402/0603,"Values come from Nordic + ST reference designs, not guessed"
