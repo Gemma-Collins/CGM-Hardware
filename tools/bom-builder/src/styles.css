@@ -130,6 +130,13 @@
 .bom .field input[type="number"] { font-size: 14px; }
 .bom .field .with-btn { display: flex; gap: 6px; }
 
+/* legend & drive check */
+.bom .legend { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--bom-muted); background: var(--bom-surface); border: 1px solid var(--bom-line); border-left: 3px solid var(--bom-lime); border-radius: var(--bom-radius); padding: 10px 14px; margin-bottom: 12px; max-width: 100%; }
+.bom .legend b { color: var(--bom-ink); }
+.bom .drive-check { margin-bottom: 14px; }
+.bom .drive-check dd { display: flex; gap: 8px; align-items: center; justify-content: flex-end; }
+.bom .drive-check dt small b { color: var(--bom-ink); }
+
 /* readouts */
 .bom .readout { display: grid; grid-template-columns: 1fr auto; gap: 0; margin: 0; }
 .bom .readout > div { display: contents; }

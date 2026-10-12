@@ -5,10 +5,10 @@
   const root = document.getElementById('bom-builder');
   if (!root || !K) return;
 
-  const STORE_KEY = 'bom-builder-draft-v1';
+  const STORE_KEY = 'bom-builder-draft-v2';
   const SAMPLE = window.BOM_SAMPLE ? K.normalize(JSON.parse(JSON.stringify(window.BOM_SAMPLE))) : K.newState();
 
-  let S = loadDraft() || K.normalize(JSON.parse(JSON.stringify(SAMPLE)));
+  let S = loadDraft() || K.newState();
   let C = K.compute(S);
   let tab = 'parts';
   let undoSnap = null;
@@ -127,7 +127,7 @@
     const ft = e.flightMin;
     const w = warnings();
     const g = [
-      ['All-up weight', fx(C.auw, 1), 'g', C.cats.length + ' sections, ' + K.allOnboard(S).length + ' parts', ''],
+      ['All-up weight', fx(C.auw, 1), '(g)', C.cats.length + ' sections, ' + K.allOnboard(S).length + ' parts', ''],
       ['Build cost', money(C.cost.build), '', 'plus ' + money(C.cost.other) + ' tooling & offboard', ''],
       ['Still to buy', money(C.cost.toProcure), '', K.allOnboard(S).concat(S.tooling).filter((i) => !i.procured).length + ' items not procured', ''],
       ['Hover current', fx(e.totalI, 2), 'A', fx(e.powerW, 0) + ' W at ' + fx(e.V, 1) + ' V', ''],
@@ -161,10 +161,10 @@
       case 'wt': return it ? (K.isNum(it.unitWt) || (typeof it.unitWt === 'string' && isFinite(+it.unitWt) && it.unitWt.trim() !== '') ? fx(K.itemWt(it), 1) : '–') : '';
       case 'unit': return it ? money(K.unitPrice(it)) : '';
       case 'cost': return it ? (K.unitPrice(it) == null ? (it.costNote ? '—' : '–') : money(K.itemCost(it))) : '';
-      case 'catwt': { const c = C.cats.find((x) => x.id === id); return c ? fx(c.wt, 1) + ' g' : ''; }
+      case 'catwt': { const c = C.cats.find((x) => x.id === id); return c ? fx(c.wt, 1) + ' (g)' : ''; }
       case 'catcost': { const c = C.cats.find((x) => x.id === id); return c ? money(c.cost) : ''; }
       case 'listcost': return money(S[id].reduce((a, i) => a + K.itemCost(i), 0));
-      case 'listwt': return fx(S[id].reduce((a, i) => a + K.itemWt(i), 0), 1) + ' g';
+      case 'listwt': return fx(S[id].reduce((a, i) => a + K.itemWt(i), 0), 1) + ' (g)';
       default: return '';
     }
   }
@@ -180,7 +180,7 @@
       <td class="sticky-col w-comp"><input type="text" id="c-${it.id}" data-k="item" data-id="${it.id}" data-f="component" value="${valAttr(it.component)}" placeholder="Component" aria-label="Component"></td>
       <td class="w-part"><input type="text" id="p-${it.id}" data-k="item" data-id="${it.id}" data-f="part" value="${valAttr(it.part)}" placeholder="Part / source" aria-label="Part or source"></td>
       <td class="w-qty"><input type="number" id="q-${it.id}" step="any" min="0" data-k="item" data-id="${it.id}" data-f="qty" data-t="num" value="${valAttr(it.qty)}" aria-label="Quantity"></td>
-      <td class="w-num"><input type="text" class="numlike" id="w-${it.id}" inputmode="decimal" data-k="item" data-id="${it.id}" data-f="unitWt" data-t="wt" value="${valAttr(wt)}" placeholder="g" aria-label="Unit weight in grams"></td>
+      <td class="w-num"><input type="text" class="numlike" id="w-${it.id}" inputmode="decimal" data-k="item" data-id="${it.id}" data-f="unitWt" data-t="wt" value="${valAttr(wt)}" placeholder="(g)" aria-label="Unit weight in grams"></td>
       <td class="calc" data-calc="wt:${it.id}">${calcText('wt:' + it.id)}</td>
       <td class="w-num"><input type="number" id="fp-${it.id}" step="any" min="0" data-k="item" data-id="${it.id}" data-f="fullPrice" data-t="num" value="${valAttr(it.fullPrice)}" placeholder="${sym().trim()}" aria-label="Pack price"></td>
       <td class="w-qty"><input type="number" id="pk-${it.id}" step="1" min="1" data-k="item" data-id="${it.id}" data-f="pack" data-t="num" value="${valAttr(it.pack)}" aria-label="Units per pack"></td>
@@ -212,7 +212,7 @@
 
   function headRow(onboard) {
     return `<tr>
-      <th class="sticky-col">Component</th><th>Part / Source</th><th class="r">Qty</th><th class="r">Unit g</th><th class="r">Total g</th>
+      <th class="sticky-col">Component</th><th>Part / Source</th><th class="r">Qty</th><th class="r">Unit (g)</th><th class="r">Total (g)</th>
       <th class="r">Pack price</th><th class="r" title="Units per pack">/pack</th><th class="r">Unit price</th><th class="r">Cost</th>
       ${onboard ? K.FLAGS.map((f) => `<th class="c" title="${f.label}">${f.short}</th>`).join('') : ''}
       <th class="c" title="Confirmed">Conf</th><th class="c" title="Request sent">Req</th><th class="c" title="Procured">Got</th>
@@ -247,8 +247,13 @@
       <section>
         <div class="section-head">
           <h2>Onboard BOM</h2>
-          <span class="meta">Everything that flies. Tick Acc/Bat/Mot/ESC/Prop so the eCalc weights split correctly.</span>
+          <span class="meta">Everything that flies.</span>
         </div>
+        <div class="legend">
+          <p><b>Acc = Accessory.</b> Anything onboard that isn't part of the drive system or the frame: flight controller, GPS, radios, sensors, camera, companion computer, power module, wiring and mounts. eCalc asks for accessory weight on its own and adds it on top of model weight.</p>
+          <p><b>Bat</b> = Battery · <b>Mot</b> = Motors · <b>ESC</b> = Electronic speed controller · <b>Prop</b> = Propellers. Together these are the drive system, used for eCalc's model weight without drive. <b>Conf</b> = part confirmed · <b>Req</b> = request sent · <b>Got</b> = procured.</p>
+        </div>
+        <div class="card drive-check"><header><h2>Drive system check</h2><span class="muted small">Which parts are ticked for each role</span></header><div data-live="driveCheck">${LIVE.driveCheck()}</div></div>
         <div class="tbl-wrap"><table class="grid"><thead>${headRow(true)}</thead><tbody>${cats}</tbody></table></div>
         <div style="margin-top:10px"><button type="button" class="btn sm" data-act="add-cat">+ Add section</button></div>
       </section>
@@ -291,6 +296,22 @@
   }
 
   const LIVE = {
+    driveCheck() {
+      const on = K.allOnboard(S);
+      const roles = [['batt', 'Battery', 'Bat'], ['motor', 'Motors', 'Mot'], ['esc', 'ESC', 'ESC'], ['prop', 'Props', 'Prop'], ['acc', 'Accessories', 'Acc']];
+      const qty = (k) => on.filter((i) => i[k]).reduce((a, i) => a + n(i.qty), 0);
+      const rows = roles.map(([k, label, short]) => {
+        const items = on.filter((i) => i[k]);
+        const wt = items.reduce((a, i) => a + K.itemWt(i), 0);
+        let chip = items.length ? '<span class="chip good">Set</span>' : `<span class="chip warn">Not ticked</span>`;
+        let note = items.length ? items.map((i) => esc((n(i.qty) !== 1 ? n(i.qty) + '× ' : '') + (i.component || i.part || '(unnamed)'))).join(', ') : `Tick <b>${short}</b> on the ${k === 'esc' ? 'ESC' : label.toLowerCase()} in the list below.`;
+        if (k === 'prop' && items.length && qty('motor') && qty('prop') % qty('motor') !== 0) { chip = '<span class="chip warn">Check qty</span>'; note += ` · ${qty('prop')} props for ${qty('motor')} motors`; }
+        if (k === 'batt' && items.length > 1) { chip = '<span class="chip warn">Check</span>'; note += ' · more than one part ticked as battery'; }
+        if (k === 'acc' && !items.length) { chip = '<span class="chip">None</span>'; note = 'No accessories ticked. Electronics like the flight controller and GPS usually count as accessories.'; }
+        return `<div><dt>${label}<small>${note}</small></dt><dd>${fx(wt, 1)} (g) ${chip}</dd></div>`;
+      });
+      return `<dl class="readout">${rows.join('')}</dl>`;
+    },
     current() {
       const e = C.elec;
       return `<dl class="readout">
@@ -313,7 +334,7 @@
         <div><dt>Voltage sag at hover<small>${fx(n(S.battery.resistance) * 1000, 1)} mΩ/cell</small></dt><dd>${fx(e.sagV, 2)} V → ${fx(e.vLoaded, 2)} V</dd></div>
         <div><dt>Hover power</dt><dd>${fx(e.powerW, 1)} W</dd></div>
         ${escc ? `<div><dt>ESC headroom<small>${esc(escc.text)}</small></dt><dd><span class="chip ${escc.cls}">${escc.cls === 'good' ? 'OK' : escc.cls === 'warn' ? 'Tight' : 'Over'}</span></dd></div>` : ''}
-        ${e.twr != null ? `<div><dt>Thrust-to-weight<small>${e.nMotors} × ${fx(n(S.elec.thrustG), 0)} g ÷ ${fx(C.auw, 0)} g</small></dt><dd><span class="chip ${e.twr < 1.6 ? 'bad' : e.twr < 2 ? 'warn' : 'good'}">${fx(e.twr, 2)} : 1</span></dd></div>` : ''}
+        ${e.twr != null ? `<div><dt>Thrust-to-weight<small>${e.nMotors} × ${fx(n(S.elec.thrustG), 0)} (g) ÷ ${fx(C.auw, 0)} (g)</small></dt><dd><span class="chip ${e.twr < 1.6 ? 'bad' : e.twr < 2 ? 'warn' : 'good'}">${fx(e.twr, 2)} : 1</span></dd></div>` : ''}
       </dl>`;
     },
     supW(id) { const nd = supNode(id); return nd ? fx(nd.outW, 2) + ' W' : ''; },
@@ -463,14 +484,14 @@
           <header><h2>eCalc inputs</h2><span class="muted small">Weights in grams, from the parts list</span></header>
           <p class="hint">eCalc adds accessory weight on top of model weight. Enter <b>Model weight incl. drive</b> (AUW minus accessories) and the accessories separately, or eCalc will count them twice.</p>
           <dl class="readout">
-            ${row('Model weight incl. drive', 'AUW − accessories', ei.inclDrive, 'g')}
-            ${row('Accessories', 'parts ticked “Acc”', ei.acc, 'g')}
+            ${row('Model weight incl. drive', 'AUW − accessories', ei.inclDrive, '(g)')}
+            ${row('Accessories', 'parts ticked “Acc”', ei.acc, '(g)')}
             ${row('Accessory current drain', 'all loads incl. converter losses', C.elec.accI, 'A', 2)}
-            ${row('AUW', 'everything onboard', ei.auw, 'g')}
-            ${row('Model weight w/o drive', 'AUW − battery, motors, ESC, props', ei.woDrive, 'g')}
-            ${row('Model weight w/o battery', '', ei.woBatt, 'g')}
-            ${row('Drive', 'battery + motors + ESC + props', ei.drive, 'g')}
-            ${row('Battery cell weight', C.cells + ' cells', C.cellW, 'g')}
+            ${row('AUW', 'everything onboard', ei.auw, '(g)')}
+            ${row('Model weight w/o drive', 'AUW − battery, motors, ESC, props', ei.woDrive, '(g)')}
+            ${row('Model weight w/o battery', '', ei.woBatt, '(g)')}
+            ${row('Drive', 'battery + motors + ESC + props', ei.drive, '(g)')}
+            ${row('Battery cell weight', C.cells + ' cells', C.cellW, '(g)')}
           </dl>
         </section>
         <section class="card">
@@ -524,9 +545,9 @@
     const r = Math.abs(diff) / (C.auw || 1);
     const cls = r > 0.05 ? 'bad' : r > 0.02 ? 'warn' : 'good';
     return `<dl class="readout">
-      <div><dt>BOM all-up weight</dt><dd>${fx(C.auw, 1)} g</dd></div>
-      <div><dt>eCalc all-up weight</dt><dd>${fx(rep, 1)} g</dd></div>
-      <div class="total"><dt>Difference</dt><dd><span class="chip ${cls}">${diff > 0 ? '+' : ''}${fx(diff, 1)} g</span></dd></div>
+      <div><dt>BOM all-up weight</dt><dd>${fx(C.auw, 1)} (g)</dd></div>
+      <div><dt>eCalc all-up weight</dt><dd>${fx(rep, 1)} (g)</dd></div>
+      <div class="total"><dt>Difference</dt><dd><span class="chip ${cls}">${diff > 0 ? '+' : ''}${fx(diff, 1)} (g)</span></dd></div>
     </dl>${cls === 'bad' && Math.abs(diff - C.accW) < Math.abs(diff) * 0.5 ? '<p class="hint">The gap is close to your accessory weight, which usually means accessories were counted twice. Re-run eCalc with model weight = AUW − accessories.</p>' : cls !== 'good' ? '<p class="hint">Weights in eCalc no longer match the BOM. Re-run eCalc with the inputs on the left.</p>' : ''}`;
   };
 
@@ -552,14 +573,14 @@
     const flags = [['Battery', 'batt'], ['Motors', 'motor'], ['ESC', 'esc'], ['Props', 'prop'], ['Accessories', 'acc']].map(([l, k]) => [l, onboard.filter((i) => i[k]).reduce((a, i) => a + K.itemWt(i), 0)]);
     const unflagged = C.auw - flags.reduce((a, f) => a + f[1], 0);
     return `<div class="cols">
-      <section class="card"><header><h2>Weight by section</h2><span class="num">${fx(C.auw, 1)} g AUW</span></header>${bars(C.cats.map((c) => [K.titleCase(c.name), c.wt]), (v) => fx(v, 1) + ' g')}</section>
+      <section class="card"><header><h2>Weight by section</h2><span class="num">${fx(C.auw, 1)} (g) AUW</span></header>${bars(C.cats.map((c) => [K.titleCase(c.name), c.wt]), (v) => fx(v, 1) + ' (g)')}</section>
       <section class="card"><header><h2>Cost by section</h2><span class="num">${money(C.cost.build)}</span></header>${bars(C.cats.map((c) => [K.titleCase(c.name), c.cost]), money)}
         <dl class="readout">
           <div><dt>Tooling</dt><dd>${money(C.cost.tooling)}</dd></div>
           <div><dt>Offboard</dt><dd>${money(C.cost.offboard)}</dd></div>
           <div class="total"><dt>Everything</dt><dd>${money(C.cost.build + C.cost.other)}</dd></div>
         </dl></section>
-      <section class="card"><header><h2>Weight by role</h2><span class="muted small">From the Acc/Bat/Mot/ESC/Prop ticks</span></header>${bars(flags.concat([['Frame & other', Math.max(0, unflagged)]]), (v) => fx(v, 1) + ' g')}</section>
+      <section class="card"><header><h2>Weight by role</h2><span class="muted small">From the Acc/Bat/Mot/ESC/Prop ticks</span></header>${bars(flags.concat([['Frame & other', Math.max(0, unflagged)]]), (v) => fx(v, 1) + ' (g)')}</section>
       <section class="card"><header><h2>Procurement</h2></header>
         <dl class="readout">
           <div><dt>Confirmed</dt><dd>${confirmed} / ${onboard.length}</dd></div>
@@ -779,5 +800,5 @@
   if (['parts', 'power', 'ecalc', 'breakdown'].includes(hash)) tab = hash;
   shell();
   renderAll();
-  setSaved(loadDraft() ? 'Saved in this browser' : 'Example build loaded — edit it, open your own spreadsheet, or start blank');
+  setSaved(loadDraft() ? 'Saved in this browser' : 'New blank build. Add parts, open a spreadsheet, or load the example');
 })();

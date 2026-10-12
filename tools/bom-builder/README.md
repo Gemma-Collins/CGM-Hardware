@@ -54,7 +54,7 @@ and loads and supplies are matched to BOM parts by name.
   `<iframe src="…/bom-builder.html" style="width:100%;height:1400px;border:0"></iframe>`.
 
 The page loads ExcelJS from cdnjs and fonts from Google Fonts; everything else
-is inline. It ships with the Parakeet build as the example (**Load example**).
+is inline. It opens on a blank build; **Load example** loads the Parakeet build.
 To change the example, replace `src/sample.json` (the app's own state format)
 and run `python3 build.py`.
 
