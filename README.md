@@ -34,6 +34,7 @@ phone required at all — is a later phase, not part of the initial build.
 
 - `hardware/` — Altium Designer project: schematic, PCB layout, BOM, library notes
 - `firmware/` — nRF52832 firmware (nRF Connect SDK)
+- `tools/bom-builder/` — standalone web app for build BOMs, power/current and eCalc numbers (reads/writes .xlsx)
 
 ## Reference projects
 

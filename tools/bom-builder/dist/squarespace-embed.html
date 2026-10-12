@@ -1,0 +1,1963 @@
+<!-- BOM BUILDER EMBED START -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Semi+Condensed:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a workbench — summary gauges up top, then one tab at a time (parts, power, eCalc, breakdown). */
+:root {
+  --bom-bg: #f3f5f8;
+  --bom-surface: #ffffff;
+  --bom-sunk: #eaeef3;
+  --bom-ink: #17202a;
+  --bom-muted: #5a6a7b;
+  --bom-line: #d5dce5;
+  --bom-head: #3b4450;
+  --bom-head-ink: #ffffff;
+  --bom-accent: #1f5ccc;
+  --bom-accent-soft: #e3ebfa;
+  --bom-accent-ink: #ffffff;
+  --bom-good: #1d7f48;
+  --bom-good-soft: #e1f2e8;
+  --bom-warn: #9a6200;
+  --bom-warn-soft: #fbefd6;
+  --bom-bad: #b42828;
+  --bom-bad-soft: #f9e1e1;
+  --bom-font: "Barlow", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --bom-font-label: "Barlow Semi Condensed", "Barlow", "Arial Narrow", system-ui, sans-serif;
+  --bom-font-num: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bom-bg: #0f141a; --bom-surface: #161d25; --bom-sunk: #1d2630; --bom-ink: #e2e8ee; --bom-muted: #94a3b3;
+    --bom-line: #2b3643; --bom-head: #2c3642; --bom-head-ink: #e8edf2; --bom-accent: #7aa7ff; --bom-accent-soft: #1d2a42;
+    --bom-accent-ink: #0b1220; --bom-good: #5cc98a; --bom-good-soft: #15301f; --bom-warn: #e9b44c; --bom-warn-soft: #362a12;
+    --bom-bad: #ff8a80; --bom-bad-soft: #3a1b1b; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bom-bg: #0f141a; --bom-surface: #161d25; --bom-sunk: #1d2630; --bom-ink: #e2e8ee; --bom-muted: #94a3b3;
+  --bom-line: #2b3643; --bom-head: #2c3642; --bom-head-ink: #e8edf2; --bom-accent: #7aa7ff; --bom-accent-soft: #1d2a42;
+  --bom-accent-ink: #0b1220; --bom-good: #5cc98a; --bom-good-soft: #15301f; --bom-warn: #e9b44c; --bom-warn-soft: #362a12;
+  --bom-bad: #ff8a80; --bom-bad-soft: #3a1b1b; color-scheme: dark;
+}
+
+.bom, .bom * { box-sizing: border-box; }
+.bom {
+  font-family: var(--bom-font); font-size: 15px; line-height: 1.45; color: var(--bom-ink);
+  background: var(--bom-bg); padding: 20px 16px 28px; border-radius: 6px; position: relative;
+  max-width: 1500px; margin: 0 auto; text-align: left;
+}
+.bom.drop-active { outline: 3px dashed var(--bom-accent); outline-offset: -6px; }
+.bom h1, .bom h2, .bom h3 { font-family: var(--bom-font-label); margin: 0; letter-spacing: .01em; text-wrap: balance; color: var(--bom-ink); }
+.bom h2 { font-size: 1.15rem; font-weight: 600; }
+.bom h3 { font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--bom-muted); }
+.bom p { margin: 0; }
+.bom .muted { color: var(--bom-muted); }
+.bom .small { font-size: .85rem; }
+.bom .num, .bom .grid td.calc, .bom .val { font-family: var(--bom-font-num); font-variant-numeric: tabular-nums; font-size: .85rem; }
+
+/* header */
+.bom .top { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: flex-end; justify-content: space-between; margin-bottom: 16px; }
+.bom .brand { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1 1 280px; }
+.bom .brand .eyebrow { font-family: var(--bom-font-label); font-size: .78rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--bom-accent); }
+.bom input.title-input { font-family: var(--bom-font-label); font-size: 1.7rem; font-weight: 600; border: 1px solid transparent; background: transparent; color: var(--bom-ink); padding: 0 4px; margin-left: -5px; border-radius: 4px; width: 100%; }
+.bom input.title-input:hover { border-color: var(--bom-line); }
+.bom .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.bom .saved { font-size: .8rem; color: var(--bom-muted); width: 100%; text-align: right; }
+
+/* buttons & inputs */
+.bom button { font: inherit; cursor: pointer; }
+.bom .btn { font-family: var(--bom-font-label); font-weight: 600; font-size: .92rem; letter-spacing: .02em; padding: 7px 14px; border-radius: 5px; border: 1px solid var(--bom-line); background: var(--bom-surface); color: var(--bom-ink); line-height: 1.2; white-space: nowrap; }
+.bom .btn:hover { border-color: var(--bom-accent); color: var(--bom-accent); }
+.bom .btn.primary { background: var(--bom-accent); border-color: var(--bom-accent); color: var(--bom-accent-ink); }
+.bom .btn.primary:hover { filter: brightness(1.08); color: var(--bom-accent-ink); }
+.bom .btn.ghost { border-color: transparent; background: transparent; color: var(--bom-muted); padding: 4px 8px; }
+.bom .btn.ghost:hover { color: var(--bom-accent); }
+.bom .btn.sm { font-size: .82rem; padding: 4px 10px; }
+.bom .icon-btn { border: 0; background: transparent; color: var(--bom-muted); padding: 2px 5px; border-radius: 4px; font-size: .95rem; line-height: 1; }
+.bom .icon-btn:hover { color: var(--bom-accent); background: var(--bom-accent-soft); }
+.bom .icon-btn.danger:hover { color: var(--bom-bad); background: var(--bom-bad-soft); }
+.bom :focus-visible { outline: 2px solid var(--bom-accent); outline-offset: 1px; }
+.bom input[type="text"], .bom input[type="number"], .bom select, .bom textarea {
+  font: inherit; font-size: .88rem; color: var(--bom-ink); background: var(--bom-surface); border: 1px solid var(--bom-line);
+  border-radius: 4px; padding: 4px 6px; width: 100%; min-width: 0;
+}
+.bom input[type="number"] { font-family: var(--bom-font-num); font-size: .82rem; text-align: right; }
+.bom input.numlike { font-family: var(--bom-font-num); font-size: .82rem; text-align: right; }
+.bom textarea { resize: vertical; line-height: 1.35; min-height: 30px; }
+.bom input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--bom-accent); margin: 0; vertical-align: middle; cursor: pointer; }
+.bom input::placeholder, .bom textarea::placeholder { color: var(--bom-muted); opacity: .7; }
+
+/* summary gauges */
+.bom .gauges { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: var(--bom-line); border: 1px solid var(--bom-line); border-radius: 6px; overflow: hidden; margin-bottom: 18px; }
+.bom .gauge { background: var(--bom-surface); padding: 10px 14px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.bom .gauge .lab { font-family: var(--bom-font-label); font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .09em; color: var(--bom-muted); }
+.bom .gauge .big { font-family: var(--bom-font-num); font-variant-numeric: tabular-nums; font-size: 1.35rem; font-weight: 600; color: var(--bom-ink); white-space: nowrap; }
+.bom .gauge .big small { font-size: .8rem; color: var(--bom-muted); font-weight: 400; margin-left: 2px; }
+.bom .gauge .sub { font-size: .8rem; color: var(--bom-muted); }
+.bom .gauge.is-bad .big { color: var(--bom-bad); }
+.bom .gauge.is-warn .big { color: var(--bom-warn); }
+
+/* tabs */
+.bom .tabs { display: flex; gap: 2px; border-bottom: 2px solid var(--bom-line); margin-bottom: 18px; overflow-x: auto; }
+.bom .tab { font-family: var(--bom-font-label); font-weight: 600; font-size: 1rem; letter-spacing: .02em; padding: 8px 16px; border: 0; background: transparent; color: var(--bom-muted); border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+.bom .tab:hover { color: var(--bom-ink); }
+.bom .tab[aria-selected="true"] { color: var(--bom-accent); border-bottom-color: var(--bom-accent); }
+.bom .tab .count { font-family: var(--bom-font-num); font-size: .72rem; margin-left: 6px; padding: 1px 6px; border-radius: 10px; background: var(--bom-bad-soft); color: var(--bom-bad); }
+
+/* sections & cards */
+.bom .stack { display: flex; flex-direction: column; gap: 22px; }
+.bom .section-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; margin-bottom: 8px; }
+.bom .section-head .meta { font-size: .85rem; color: var(--bom-muted); }
+.bom .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: 18px; align-items: start; }
+.bom .card { background: var(--bom-surface); border: 1px solid var(--bom-line); border-radius: 6px; padding: 14px 16px; min-width: 0; display: flex; flex-direction: column; gap: 12px; }
+.bom .card > header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.bom .hint { font-size: .85rem; color: var(--bom-muted); max-width: 70ch; }
+.bom .form { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px 14px; }
+.bom .field { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.bom .field > span { font-family: var(--bom-font-label); font-size: .78rem; font-weight: 600; letter-spacing: .05em; text-transform: uppercase; color: var(--bom-muted); }
+.bom .field .with-btn { display: flex; gap: 6px; }
+
+/* readouts */
+.bom .readout { display: grid; grid-template-columns: 1fr auto; gap: 0; }
+.bom .readout > div { display: contents; }
+.bom .readout dt, .bom .readout dd { padding: 6px 0; border-bottom: 1px solid var(--bom-line); margin: 0; }
+.bom .readout dt { color: var(--bom-ink); font-size: .9rem; padding-right: 12px; }
+.bom .readout dt small { display: block; color: var(--bom-muted); font-size: .78rem; }
+.bom .readout dd { text-align: right; font-family: var(--bom-font-num); font-variant-numeric: tabular-nums; font-size: .88rem; white-space: nowrap; }
+.bom .readout .total dt, .bom .readout .total dd { font-weight: 700; border-bottom: 2px solid var(--bom-ink); }
+.bom .readout .copy { margin-left: 6px; }
+
+/* chips */
+.bom .chip { display: inline-flex; align-items: center; gap: 4px; font-family: var(--bom-font-label); font-size: .78rem; font-weight: 600; letter-spacing: .03em; padding: 1px 8px; border-radius: 10px; white-space: nowrap; background: var(--bom-sunk); color: var(--bom-muted); border: 0; }
+.bom .chip.good { background: var(--bom-good-soft); color: var(--bom-good); }
+.bom .chip.warn { background: var(--bom-warn-soft); color: var(--bom-warn); }
+.bom .chip.bad { background: var(--bom-bad-soft); color: var(--bom-bad); }
+.bom .chip.link { background: var(--bom-accent-soft); color: var(--bom-accent); cursor: pointer; }
+.bom .chip.link:hover { text-decoration: underline; }
+.bom .chip-row { display: flex; flex-wrap: wrap; gap: 4px; }
+
+/* spreadsheet-like tables */
+.bom .tbl-wrap { overflow-x: auto; border: 1px solid var(--bom-line); border-radius: 6px; background: var(--bom-surface); max-width: 100%; }
+.bom .grid { border-collapse: separate; border-spacing: 0; width: 100%; font-size: .88rem; }
+.bom .grid th { font-family: var(--bom-font-label); font-weight: 600; font-size: .8rem; letter-spacing: .04em; text-align: left; background: var(--bom-head); color: var(--bom-head-ink); padding: 7px 6px; white-space: nowrap; position: sticky; top: 0; z-index: 2; }
+.bom .grid th.r, .bom .grid td.r { text-align: right; }
+.bom .grid th.c, .bom .grid td.c { text-align: center; }
+.bom .grid td { padding: 3px 4px; border-bottom: 1px solid var(--bom-line); vertical-align: top; background: var(--bom-surface); }
+.bom .grid td.calc { padding: 7px 6px; text-align: right; white-space: nowrap; color: var(--bom-ink); background: var(--bom-sunk); }
+.bom .grid td.c { padding-top: 7px; }
+.bom .grid .sticky-col { position: sticky; left: 0; z-index: 1; box-shadow: 1px 0 0 var(--bom-line); }
+.bom .grid th.sticky-col { z-index: 3; }
+.bom .grid tr.cat td { background: var(--bom-sunk); border-bottom: 1px solid var(--bom-line); padding: 6px 6px; }
+.bom .grid tr.cat .cat-inner { position: sticky; left: 6px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; width: max-content; max-width: calc(100vw - 80px); }
+.bom .grid tr.cat input.cat-name { font-family: var(--bom-font-label); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; width: 220px; background: transparent; border-color: transparent; font-size: .95rem; }
+.bom .grid tr.cat input.cat-name:hover, .bom .grid tr.cat input.cat-name:focus { border-color: var(--bom-line); background: var(--bom-surface); }
+.bom .grid tr.add td { border-bottom: 0; padding: 4px 6px 10px; }
+.bom .grid tr.add .add-inner { position: sticky; left: 6px; display: inline-flex; gap: 6px; }
+.bom .grid tr.foot td { font-weight: 700; background: var(--bom-surface); border-top: 2px solid var(--bom-ink); }
+.bom .grid tr.empty td { color: var(--bom-muted); font-style: italic; padding: 10px; }
+.bom .grid .w-comp { min-width: 170px; }
+.bom .grid .w-part { min-width: 200px; }
+.bom .grid .w-qty { width: 62px; min-width: 62px; }
+.bom .grid .w-num { width: 84px; min-width: 84px; }
+.bom .grid .w-notes { min-width: 260px; }
+.bom .grid .w-store { min-width: 120px; }
+.bom .grid .w-sel { min-width: 180px; }
+.bom .grid .w-act { width: 1%; white-space: nowrap; padding-top: 6px; }
+.bom .grid tr.is-procured td.sticky-col input { color: var(--bom-muted); }
+.bom .grid .flagcol { width: 38px; }
+
+/* meters */
+.bom .meter { position: relative; height: 8px; background: var(--bom-sunk); border-radius: 4px; overflow: hidden; min-width: 80px; }
+.bom .meter > i { position: absolute; inset: 0 auto 0 0; background: var(--bom-good); border-radius: 4px; }
+.bom .meter.warn > i { background: var(--bom-warn); }
+.bom .meter.bad > i { background: var(--bom-bad); }
+.bom .bars { display: flex; flex-direction: column; gap: 8px; }
+.bom .bar-row { display: grid; grid-template-columns: minmax(90px, 160px) 1fr auto; gap: 10px; align-items: center; font-size: .9rem; }
+.bom .bar-row .track { height: 14px; background: var(--bom-sunk); border-radius: 3px; overflow: hidden; }
+.bom .bar-row .track > i { display: block; height: 100%; background: var(--bom-accent); border-radius: 3px; }
+.bom .bar-row .v { font-family: var(--bom-font-num); font-size: .82rem; text-align: right; white-space: nowrap; }
+.bom .bar-row .v small { color: var(--bom-muted); margin-left: 6px; }
+
+/* power tree */
+.bom .tree { display: flex; flex-direction: column; gap: 6px; font-size: .9rem; }
+.bom .tree ul { list-style: none; margin: 0; padding: 0 0 0 22px; border-left: 2px solid var(--bom-line); display: flex; flex-direction: column; gap: 6px; }
+.bom .tree .node { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: 6px 10px; border: 1px solid var(--bom-line); border-radius: 5px; background: var(--bom-surface); }
+.bom .tree .node.src { background: var(--bom-head); color: var(--bom-head-ink); border-color: var(--bom-head); }
+.bom .tree .node.sup { border-left: 4px solid var(--bom-accent); }
+.bom .tree .node.ld { background: var(--bom-sunk); border-style: dashed; }
+.bom .tree .node .nm { font-weight: 600; }
+.bom .tree .node .val { margin-left: auto; color: inherit; opacity: .9; }
+
+/* notes list */
+.bom .note-list { display: flex; flex-direction: column; gap: 8px; }
+.bom .note-list .note { display: flex; gap: 6px; align-items: flex-start; }
+
+/* toast */
+.bom .toast { position: sticky; bottom: 12px; margin: 16px auto 0; width: fit-content; max-width: 100%; display: flex; gap: 12px; align-items: center; background: var(--bom-ink); color: var(--bom-bg); padding: 9px 14px; border-radius: 6px; font-size: .9rem; z-index: 5; }
+.bom .toast button { background: transparent; border: 1px solid currentColor; color: inherit; border-radius: 4px; padding: 2px 10px; font-family: var(--bom-font-label); font-weight: 600; }
+.bom .toast.err { background: var(--bom-bad); color: #fff; }
+
+.bom .footer { margin-top: 26px; font-size: .8rem; color: var(--bom-muted); display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: space-between; }
+
+@media (max-width: 640px) {
+  .bom { font-size: 14px; padding: 16px 16px 24px; }
+  .bom input.title-input { font-size: 1.35rem; }
+  .bom .saved { text-align: left; }
+  .bom .gauges { grid-template-columns: repeat(2, 1fr); }
+  .bom .bar-row { grid-template-columns: 90px 1fr; }
+  .bom .bar-row .v { grid-column: 2; text-align: left; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .bom .meter > i, .bom .bar-row .track > i { transition: width .25s ease; }
+}
+</style>
+<div id="bom-builder" class="bom"><p style="padding:24px">Loading BOM Builder…</p></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script>
+window.BOM_SAMPLE = {"version":1,"meta":{"title":"Parakeet MB — 4S + Arducam","currency":"AUD"},"categories":[{"id":"c53su15","name":"POWER","items":[{"id":"i6s10rs","component":"Battery","confirmed":true,"part":"Ovonic 4S 2200mAh 130C LiPo","qty":1,"acc":false,"batt":true,"motor":false,"esc":false,"prop":false,"notes":"14.8V nominal; 130C burst, 130C × 2.2Ah = 286A cont","unitWt":200,"fullPrice":52.49,"pack":2,"reqSent":true,"procured":false,"store":"Ovonics","costNote":""},{"id":"i7djkqg","component":"T-Plug to XT60 Adapter","confirmed":true,"part":"Female T-plug to XT60 male","qty":1,"acc":true,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"","unitWt":5,"fullPrice":11.99,"pack":1,"reqSent":true,"procured":false,"store":"Amazon","costNote":""},{"id":"i8ty467","component":"Power Module","confirmed":true,"part":"Holybro PM02","qty":1,"acc":true,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"A passive analog power module that powers the pixhawk 6c and tracks and collects live battery info for pixhawk to read","unitWt":20,"fullPrice":null,"pack":1,"reqSent":true,"procured":true,"store":"","costNote":""},{"id":"i9fyzz1","component":"2 way Y-Splitter","confirmed":true,"part":"Female XT60 input, x2 male XT60 outputs","qty":1,"acc":false,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"Splits battery supply to Drone and CV systems","unitWt":30,"fullPrice":6.975,"pack":1,"reqSent":true,"procured":false,"store":"Amazon","costNote":""},{"id":"ia47rpl","component":"xt60 male to female","confirmed":true,"part":"male to female xt60","qty":2,"acc":false,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"","unitWt":null,"fullPrice":17.49,"pack":2,"reqSent":true,"procured":false,"store":"Amazon","costNote":""},{"id":"ibutmoi","component":"Buck Converter","confirmed":true,"part":"Buck Converter","qty":1,"acc":true,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"Reduces Battery 14.8V to 5V 3A for Pi\nSolder the bare wire pins to female xt60 connector\ncut off jst and solder on dupont female crimp pin","unitWt":15,"fullPrice":15,"pack":4,"reqSent":true,"procured":false,"store":"Amazon","costNote":""},{"id":"ic0dpje","component":"20 AWG","confirmed":true,"part":"Red & Black","qty":2,"acc":false,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"Connect F60 motors to ESC","unitWt":10,"fullPrice":17.65,"pack":2,"reqSent":true,"procured":false,"store":"Amazon","costNote":""}]},{"id":"cd33hqj","name":"STRUCTURE","items":[{"id":"ieyan4h","component":"Frame Kit","confirmed":true,"part":"Holybro X500 X4 Carbon Fibre","qty":1,"acc":false,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"500mm frame","unitWt":300,"fullPrice":94,"pack":1,"reqSent":true,"procured":true,"store":"","costNote":""}]},{"id":"cf20vl3","name":"DRIVE","items":[{"id":"igwxiyx","component":"Motors","confirmed":true,"part":"T-Motor F60 Pro IV 1750KV","qty":4,"acc":false,"batt":false,"motor":true,"esc":false,"prop":false,"notes":"2207.5","unitWt":34.3,"fullPrice":26.9,"pack":1,"reqSent":true,"procured":true,"store":"","costNote":""},{"id":"ihuwypw","component":"ESC","confirmed":true,"part":"Holybro Tekko 32 F4 4-in-1 65A","qty":1,"acc":false,"batt":false,"motor":false,"esc":true,"prop":false,"notes":"65A continuous","unitWt":15.8,"fullPrice":87.99,"pack":1,"reqSent":true,"procured":true,"store":"","costNote":""},{"id":"ii51mba","component":"Propellers","confirmed":true,"part":"Ethix P3B 5.1x3x3","qty":4,"acc":false,"batt":false,"motor":false,"esc":false,"prop":true,"notes":"","unitWt":2.6,"fullPrice":1.7375,"pack":1,"reqSent":true,"procured":true,"store":"","costNote":""}]},{"id":"cjkmob2","name":"FLIGHT CONTROL","items":[{"id":"ikht2yg","component":"Flight Controller","confirmed":true,"part":"Holybro Pixhawk 6C","qty":1,"acc":true,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"Hardware carrier board connecting & (sometimes) powers peripherals, and runs PX4 firmware that collects and manages and forwards user inputs from QGC, and also receives and sends back sensory and telemetry adta from conneted peripherals i.e. GNSS, Battery, Ardupilot and Pi","unitWt":34.6,"fullPrice":199,"pack":1,"reqSent":true,"procured":true,"store":"","costNote":""},{"id":"ilki8tm","component":"GNSS Module","confirmed":true,"part":"Holybro M10 GNSS","qty":1,"acc":true,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"For outdoor telemetry & navigation, UART protocol, Sits on mast away from EM interefernce","unitWt":32,"fullPrice":43.99,"pack":1,"reqSent":true,"procured":true,"store":"","costNote":""},{"id":"immqrsv","component":"Telemetry Radio","confirmed":true,"part":"Holybro SiK V3 915 MHz","qty":1,"acc":true,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"915 MHz AU; ground link, UART","unitWt":9.5,"fullPrice":58.99,"pack":1,"reqSent":true,"procured":true,"store":"","costNote":""},{"id":"in61meb","component":"Optical Flow Sensor","confirmed":true,"part":"Holybro H-Flow","qty":1,"acc":true,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"For indoor telemetry & navigation, CAN protocol, Sits under battery undercarriage facing towards ground","unitWt":15,"fullPrice":145,"pack":1,"reqSent":true,"procured":true,"store":"","costNote":""}]},{"id":"co1m27d","name":"CV SYSTEM","items":[{"id":"ipubs93","component":"Companion Computer","confirmed":true,"part":"Raspberry Pi 4B 4GB","qty":1,"acc":true,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"Running Ubunu. 5V 3A","unitWt":46,"fullPrice":145.6,"pack":1,"reqSent":true,"procured":true,"store":"","costNote":""},{"id":"iqm41vg","component":"Camera","confirmed":true,"part":"Arducam IMX296 1.58MP","qty":1,"acc":true,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"Has Global shutter: captures all pixels simultaneously, giving clean images during fast drone movement.","unitWt":25,"fullPrice":179.95,"pack":1,"reqSent":true,"procured":false,"store":"Core Electronics","costNote":""},{"id":"irtptnp","component":"Ribbon Cable","confirmed":true,"part":"150mm 15pin to 22pin FPC cable","qty":1,"acc":false,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"Included in Ardupilot kit","unitWt":"Included in cam row","fullPrice":null,"pack":1,"reqSent":false,"procured":false,"store":"","costNote":""},{"id":"is7mvka","component":"Camera Holder","confirmed":true,"part":"acrylic case","qty":1,"acc":false,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"Included in Ardupilot kit","unitWt":null,"fullPrice":null,"pack":1,"reqSent":false,"procured":false,"store":"","costNote":""}]}],"offboard":[{"id":"ito3ptf","component":"Controller / TX","confirmed":true,"part":"Laptop","qty":1,"acc":false,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"With QGroundContol as flight planning software, Connects to FC\nFlight Planning,  Navigation, & telemetry reading","unitWt":"-","fullPrice":null,"pack":1,"reqSent":true,"procured":true,"store":"","costNote":""},{"id":"iu1z63q","component":"Antenna 2/2","confirmed":true,"part":"Holybro SiK V3","qty":null,"acc":false,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"915MHz, UART protocol","unitWt":"-","fullPrice":null,"pack":1,"reqSent":true,"procured":true,"store":"","costNote":"Cost included in first antenna above"}],"tooling":[{"id":"ivrjnes","component":"Wiring kit","confirmed":true,"part":"Dupont Crimping Kit","qty":1,"acc":false,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"To cut off JST from UBEC and connect female connections for GPIO on Pi","unitWt":"-","fullPrice":54.99,"pack":1,"reqSent":true,"procured":false,"store":"amazon","costNote":""},{"id":"iw1jy1x","component":"Wiring kit","confirmed":true,"part":"JST-GH Crimping Kit","qty":1,"acc":false,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"For wites between PM02 and pixhawk, and Pixhawk and PI","unitWt":null,"fullPrice":82.92,"pack":1,"reqSent":true,"procured":false,"store":"amazon","costNote":""},{"id":"ixgl7xx","component":"Multimeter","confirmed":true,"part":"Multimeter","qty":1,"acc":false,"batt":false,"motor":false,"esc":false,"prop":false,"notes":"","unitWt":null,"fullPrice":23.99,"pack":1,"reqSent":true,"procured":false,"store":"amazon","costNote":""}],"elec":{"vSupply":14.8,"escEff":95,"hoverW":217,"escRatingA":null,"thrustG":null},"battery":{"type":"Custom","cells":4,"parallel":1,"capacity":2200,"maxDischarge":80,"resistance":0.005,"cellV":3.7,"cCont":130,"cMax":260,"fieldNotes":{"maxDischarge":"20% buffer for LiPo longevity","cellV":"nom / cell","cellWt":"from BOM"},"freeSpec":"Lipo 2200mah 80/120C 4S 85% discharge","notes":["Resistance — Ovonic doesn't publish internal resistance per cell on the spec sheet. For a 130C 2200mAh pack, ~5 mΩ/cell is typical (high-C packs have very low IR). xcalc uses this to compute voltage sag under load; 5 mΩ is a reasonable starting point and you can refine it later if you measure the pack with a battery checker.","Max discharge — xcalc uses this to calculate usable capacity. 80% (leaving 3.6V/cell as the floor) is standard practice; 85% is fine if you're comfortable landing a bit lower."]},"supplies":[{"id":"sytydv1","name":"UBEC","itemId":"ibutmoi","from":"battery","vout":5,"eff":86,"maxA":3},{"id":"s1016ct4","name":"PM02","itemId":"i8ty467","from":"battery","vout":5,"eff":100,"maxA":null}],"loads":[{"id":"lzt7xd4","name":"Pi 4B","itemId":"ipubs93","supply":"sytydv1","watts":15},{"id":"l11la61s","name":"Pixhawk 6C","itemId":"ikht2yg","supply":"s1016ct4","watts":2.6},{"id":"l1245sov","name":"M10 GNSS","itemId":"ilki8tm","supply":"battery","watts":0.25},{"id":"l13x3hiw","name":"H-Flow sensor","itemId":"in61meb","supply":"battery","watts":0.5},{"id":"l1489kvc","name":"SiK telemetry radio","itemId":"immqrsv","supply":"battery","watts":0.5},{"id":"l1590i41","name":"RC receiver","itemId":null,"supply":"battery","watts":0.1}],"ecalc":{"auw":1093,"hoverA":null,"hoverMin":null,"throttle":null,"maxA":null,"maxW":null,"twr":null},"notes":["Output AUW was ~200g high because eCalc adds Accessories weight (197.1g) on top of Model Weight: 895.5+197.1=1092.6 ≈ 1093. Enter AD8 (AUW minus accessories) instead.","X9 (217 W hover) is not in the 1093 g eCalc run (280.1 W / 18.92 A). Re-run eCalc with AD8 and update X9.","Pre-fix eCalc accessory weight was 197.1 g; BOM now gives AD7 (T-plug adapter added). xt60 M-F (row 8) has no weight yet.","So drone will fly just not well with current arducam and 4S","Future versions will increase motor, esc and props for better efficiency"]};
+</script>
+<script>
+/*
+ * BOM Builder core: data model, calculations, spreadsheet import and export.
+ * No DOM access here, so it runs in the browser and under Node for tests.
+ * Spreadsheet I/O uses ExcelJS (passed in, so the caller decides how it loads).
+ */
+(function (root) {
+  'use strict';
+
+  // ---------------------------------------------------------------- model
+
+  let seq = 0;
+  const uid = (p) => p + (++seq).toString(36) + Math.random().toString(36).slice(2, 7);
+
+  const FLAGS = [
+    { key: 'acc', label: 'Accessory', short: 'Acc' },
+    { key: 'batt', label: 'Battery', short: 'Bat' },
+    { key: 'motor', label: 'Motors', short: 'Mot' },
+    { key: 'esc', label: 'ESC', short: 'ESC' },
+    { key: 'prop', label: 'Props', short: 'Prop' },
+  ];
+
+  const BATTERY_FIELDS = [
+    { key: 'type', label: 'Type' },
+    { key: 'config', label: 'Configuration' },
+    { key: 'capacity', label: 'Cell Capacity' },
+    { key: 'maxDischarge', label: 'Max discharge' },
+    { key: 'resistance', label: 'Resistance' },
+    { key: 'cellV', label: 'Voltage' },
+    { key: 'cCont', label: 'C-Rate (cont)' },
+    { key: 'cMax', label: 'C-Rate (max)' },
+    { key: 'cellWt', label: 'Weight (cell)' },
+  ];
+
+  const ECALC_OUTPUTS = [
+    { key: 'auw', label: 'All-up weight (g)', fmt: '#,##0.0' },
+    { key: 'hoverW', label: 'Electric power at hover (W)', fmt: '0.0' },
+    { key: 'hoverA', label: 'Current at hover (A)', fmt: '0.00' },
+    { key: 'hoverMin', label: 'Hover flight time (min)', fmt: '0.0' },
+    { key: 'throttle', label: 'Hover throttle (%)', fmt: '0' },
+    { key: 'maxA', label: 'Current at max throttle (A)', fmt: '0.00' },
+    { key: 'maxW', label: 'Electric power at max (W)', fmt: '0.0' },
+    { key: 'twr', label: 'Thrust-weight ratio', fmt: '0.00' },
+  ];
+
+  function newItem(o) {
+    return Object.assign({
+      id: uid('i'), component: '', confirmed: false, part: '', qty: 1,
+      acc: false, batt: false, motor: false, esc: false, prop: false,
+      notes: '', unitWt: null, fullPrice: null, pack: 1,
+      reqSent: false, procured: false, store: '', costNote: '',
+    }, o || {});
+  }
+  const newCategory = (name, items) => ({ id: uid('c'), name: name || 'NEW SECTION', items: items || [] });
+  const newSupply = (o) => Object.assign({ id: uid('s'), name: 'Supply', itemId: null, from: 'battery', vout: 5, eff: 90, maxA: null }, o || {});
+  const newLoad = (o) => Object.assign({ id: uid('l'), name: '', itemId: null, supply: 'battery', watts: 0 }, o || {});
+
+  function newState() {
+    return {
+      version: 1,
+      meta: { title: 'New build', currency: 'AUD' },
+      categories: [newCategory('POWER'), newCategory('STRUCTURE'), newCategory('DRIVE'), newCategory('FLIGHT CONTROL')],
+      offboard: [],
+      tooling: [],
+      elec: { vSupply: 14.8, escEff: 95, hoverW: null, escRatingA: null, thrustG: null },
+      battery: {
+        type: 'Custom', cells: 4, parallel: 1, capacity: 2200, maxDischarge: 80,
+        resistance: 0.005, cellV: 3.7, cCont: null, cMax: null,
+        fieldNotes: { maxDischarge: '20% buffer for LiPo longevity', cellV: 'nom / cell', cellWt: 'from BOM' },
+        freeSpec: '', notes: [],
+      },
+      supplies: [],
+      loads: [],
+      ecalc: { auw: null, hoverA: null, hoverMin: null, throttle: null, maxA: null, maxW: null, twr: null },
+      notes: [],
+    };
+  }
+
+  // Fill in anything missing so older or hand-edited state still works.
+  function normalize(s) {
+    const base = newState();
+    s = s || {};
+    const out = Object.assign({}, base, s);
+    out.meta = Object.assign({}, base.meta, s.meta);
+    out.elec = Object.assign({}, base.elec, s.elec);
+    out.battery = Object.assign({}, base.battery, s.battery);
+    out.battery.fieldNotes = Object.assign({}, (s.battery && s.battery.fieldNotes) || base.battery.fieldNotes);
+    out.battery.notes = (s.battery && s.battery.notes) || [];
+    out.ecalc = Object.assign({}, base.ecalc, s.ecalc);
+    out.categories = (s.categories || base.categories).map((c) => Object.assign(newCategory(c.name), c, { items: (c.items || []).map((i) => newItem(i)) }));
+    out.offboard = (s.offboard || []).map((i) => newItem(i));
+    out.tooling = (s.tooling || []).map((i) => newItem(i));
+    out.supplies = (s.supplies || []).map((x) => newSupply(x));
+    out.loads = (s.loads || []).map((x) => newLoad(x));
+    out.notes = (s.notes || []).slice();
+    return out;
+  }
+
+  // ---------------------------------------------------------------- calcs
+
+  const isNum = (v) => typeof v === 'number' && isFinite(v);
+  const num = (v) => {
+    if (isNum(v)) return v;
+    if (typeof v === 'string' && v.trim() !== '' && isFinite(+v)) return +v;
+    return 0;
+  };
+  const packOf = (it) => (num(it.pack) > 0 ? num(it.pack) : 1);
+  const unitPrice = (it) => (it.fullPrice == null || it.fullPrice === '' ? null : num(it.fullPrice) / packOf(it));
+  const itemCost = (it) => { const p = unitPrice(it); return p == null ? 0 : p * num(it.qty); };
+  const itemWt = (it) => num(it.unitWt) * num(it.qty);
+  // What is still to be spent on an item: whole packs at the pack price.
+  const spendToBuy = (it) => {
+    if (it.fullPrice == null || it.fullPrice === '') return 0;
+    const pk = packOf(it);
+    return (pk === 1 ? num(it.qty) : Math.ceil(num(it.qty) / pk)) * num(it.fullPrice);
+  };
+
+  const allOnboard = (s) => s.categories.reduce((a, c) => a.concat(c.items), []);
+  const allItems = (s) => allOnboard(s).concat(s.offboard, s.tooling);
+  const itemLabel = (it) => {
+    if (!it) return '';
+    const a = (it.component || '').trim(), b = (it.part || '').trim();
+    return a && b ? a + ' — ' + b : a || b || '(unnamed item)';
+  };
+
+  function supplyParent(s, sup) {
+    const byId = new Map(s.supplies.map((x) => [x.id, x]));
+    const parentOf = (x) => (x.from && x.from !== x.id && byId.has(x.from) ? x.from : 'battery');
+    const seen = new Set([sup.id]);
+    let p = parentOf(sup);
+    while (p !== 'battery') {
+      if (seen.has(p)) return 'battery'; // cycle: treat as fed straight from the battery
+      seen.add(p);
+      p = parentOf(byId.get(p));
+    }
+    return parentOf(sup);
+  }
+  const loadSupply = (s, l) => (l.supply && s.supplies.some((x) => x.id === l.supply) ? l.supply : 'battery');
+
+  // Battery -> supplies -> loads, with power flowing back up the tree.
+  function powerTree(s) {
+    function build(id) {
+      const sup = id === 'battery' ? null : s.supplies.find((x) => x.id === id);
+      const loads = s.loads.filter((l) => loadSupply(s, l) === id);
+      const kids = s.supplies.filter((x) => supplyParent(s, x) === id).map((x) => build(x.id));
+      const outW = loads.reduce((a, l) => a + num(l.watts), 0) + kids.reduce((a, k) => a + k.inW, 0);
+      const eff = sup ? Math.min(100, Math.max(1, num(sup.eff) || 100)) : 100;
+      const inW = outW / (eff / 100);
+      const vout = sup ? num(sup.vout) : num(s.elec.vSupply);
+      const outA = vout > 0 ? outW / vout : 0;
+      const maxA = sup && num(sup.maxA) > 0 ? num(sup.maxA) : null;
+      return { id, supply: sup, loads, kids, outW, inW, lossW: inW - outW, eff, vout, outA, maxA, util: maxA ? outA / maxA : null };
+    }
+    return build('battery');
+  }
+
+  function flatSupplies(node, acc) {
+    acc = acc || [];
+    node.kids.forEach((k) => { acc.push(k); flatSupplies(k, acc); });
+    return acc;
+  }
+
+  function compute(s) {
+    const onboard = allOnboard(s);
+    const cats = s.categories.map((c) => ({
+      id: c.id, name: c.name,
+      wt: c.items.reduce((a, i) => a + itemWt(i), 0),
+      cost: c.items.reduce((a, i) => a + itemCost(i), 0),
+    }));
+    const auw = cats.reduce((a, c) => a + c.wt, 0);
+    const flagWt = (k) => onboard.filter((i) => i[k]).reduce((a, i) => a + itemWt(i), 0);
+    const battW = flagWt('batt');
+    const accW = flagWt('acc');
+    const driveW = flagWt('batt') + flagWt('motor') + flagWt('esc') + flagWt('prop');
+    const cells = num(s.battery.cells);
+    const cellW = cells > 0 ? battW / cells : 0;
+
+    const build = cats.reduce((a, c) => a + c.cost, 0);
+    const tooling = s.tooling.reduce((a, i) => a + itemCost(i), 0);
+    const offboard = s.offboard.reduce((a, i) => a + itemCost(i), 0);
+    const toProcure = onboard.concat(s.tooling).filter((i) => !i.procured).reduce((a, i) => a + spendToBuy(i), 0);
+
+    const V = num(s.elec.vSupply);
+    const perV = (w) => (V > 0 ? w / V : 0);
+    const tree = powerTree(s);
+    const hoverW = num(s.elec.hoverW);
+    const motorI = perV(hoverW);
+    const escLossW = hoverW * (1 - num(s.elec.escEff) / 100);
+    const escLossI = perV(escLossW);
+    const accI = perV(tree.outW);
+    const totalI = motorI + escLossI + accI;
+    const nMotors = onboard.filter((i) => i.motor).reduce((a, i) => a + num(i.qty), 0);
+
+    const b = s.battery;
+    const P = num(b.parallel) > 0 ? num(b.parallel) : 1;
+    const packAh = num(b.capacity) / 1000 * P;
+    const usableAh = packAh * num(b.maxDischarge) / 100;
+    const maxContA = num(b.cCont) * packAh || null;
+    const maxBurstA = num(b.cMax) * packAh || null;
+    const packR = num(b.resistance) * cells / P;
+    const sagV = totalI * packR;
+
+    return {
+      cats, auw, battW, accW, driveW, cells, cellW,
+      ecalcIn: { auw, inclDrive: auw - accW, woBatt: auw - battW, woDrive: auw - driveW, drive: driveW, acc: accW },
+      cost: { cats, build, tooling, offboard, other: tooling + offboard, toProcure },
+      elec: {
+        V, tree, supplies: flatSupplies(tree), hoverW, motorI, escLossW, escLossI, accW: tree.outW, accI, totalI,
+        nMotors, perMotorA: nMotors > 0 ? motorI / nMotors : null,
+        powerW: V * totalI,
+        packAh, usableAh, energyWh: packAh * cells * num(b.cellV),
+        flightMin: totalI > 0 ? usableAh / totalI * 60 : null,
+        maxContA, maxBurstA, headroom: maxContA ? totalI / maxContA : null,
+        sagV, vLoaded: V - sagV,
+        twr: num(s.elec.thrustG) > 0 && auw > 0 ? nMotors * num(s.elec.thrustG) / auw : null,
+      },
+    };
+  }
+
+  // ---------------------------------------------------------------- import
+
+  const COLS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  function colLetter(n) { let s = ''; while (n > 0) { const m = (n - 1) % 26; s = COLS[m] + s; n = Math.floor((n - 1) / 26); } return s; }
+  function colNumber(l) { let n = 0; for (const ch of l.toUpperCase()) n = n * 26 + (ch.charCodeAt(0) - 64); return n; }
+  const addr = (r, c) => colLetter(c) + r;
+
+  // A plain grid of {v: value, f: formula} keyed by "r,c". Values are the
+  // cached results for formula cells when the file carries them.
+  function gridFromExcelJS(ws) {
+    const cells = new Map();
+    let maxR = 0, maxC = 0;
+    ws.eachRow({ includeEmpty: false }, (row, r) => {
+      row.eachCell({ includeEmpty: false }, (cell, c) => {
+        if (cell.isMerged && cell.master && cell.master.address !== cell.address) return;
+        let v = cell.value, f = null;
+        if (v && typeof v === 'object' && !(v instanceof Date)) {
+          if ('formula' in v || 'sharedFormula' in v) {
+            f = v.formula || null;
+            if (!f && v.sharedFormula) { try { f = cell.formula; } catch (e) { f = null; } }
+            v = v.result;
+            if (v && typeof v === 'object' && 'error' in v) v = undefined;
+          } else if ('richText' in v) v = v.richText.map((t) => t.text).join('');
+          else if ('text' in v) v = v.text;
+          else if ('error' in v) v = undefined;
+          else v = undefined;
+        }
+        if (v === undefined && !f) return;
+        cells.set(r + ',' + c, { v, f });
+        if (r > maxR) maxR = r;
+        if (c > maxC) maxC = c;
+      });
+    });
+    return { cells, maxR, maxC };
+  }
+
+  // Tiny evaluator for formulas without cached results: numbers, cell refs,
+  // + - * / and parentheses, plus SUM over a range. Anything else gives null.
+  function evalFormula(g, f, depth) {
+    if (depth > 20) return null;
+    const src = f.replace(/^=/, '').replace(/\$/g, '');
+    let i = 0;
+    const peek = () => src[i];
+    const ws = () => { while (src[i] === ' ') i++; };
+    function value(r, c) {
+      const cell = g.cells.get(r + ',' + c);
+      if (!cell) return 0;
+      if (isNum(cell.v)) return cell.v;
+      if (cell.v === true) return 1;
+      if (cell.v === false) return 0;
+      if (cell.f) { const x = evalFormula(g, cell.f, depth + 1); return x == null ? NaN : x; }
+      return 0;
+    }
+    function primary() {
+      ws();
+      if (peek() === '(') { i++; const v = expr(); ws(); if (peek() === ')') i++; return v; }
+      if (peek() === '-') { i++; return -primary(); }
+      let m = /^SUM\(([A-Z]+)(\d+):([A-Z]+)(\d+)\)/i.exec(src.slice(i));
+      if (m) {
+        i += m[0].length;
+        let t = 0;
+        for (let r = +m[2]; r <= +m[4]; r++) for (let c = colNumber(m[1]); c <= colNumber(m[3]); c++) t += value(r, c);
+        return t;
+      }
+      m = /^([A-Z]+)(\d+)/i.exec(src.slice(i));
+      if (m) { i += m[0].length; return value(+m[2], colNumber(m[1])); }
+      m = /^\d*\.?\d+(e[+-]?\d+)?/i.exec(src.slice(i));
+      if (m) { i += m[0].length; return parseFloat(m[0]); }
+      throw new Error('unsupported');
+    }
+    function term() { let v = primary(); ws(); while (peek() === '*' || peek() === '/') { const op = src[i++]; const w = primary(); v = op === '*' ? v * w : v / w; ws(); } return v; }
+    function expr() { let v = term(); ws(); while (peek() === '+' || peek() === '-') { const op = src[i++]; const w = term(); v = op === '+' ? v + w : v - w; ws(); } return v; }
+    try { const v = expr(); ws(); return i === src.length && isFinite(v) ? v : null; } catch (e) { return null; }
+  }
+
+  function parseGrid(g, sheetName) {
+    const cell = (r, c) => g.cells.get(r + ',' + c);
+    const raw = (r, c) => { const x = cell(r, c); return x ? x.v : undefined; };
+    const text = (r, c) => { const v = raw(r, c); return v == null ? '' : typeof v === 'string' ? v : String(v); };
+    const numAt = (r, c) => {
+      const x = cell(r, c);
+      if (!x) return null;
+      if (isNum(x.v)) return x.v;
+      if (typeof x.v === 'string') { const m = /-?\d*\.?\d+/.exec(x.v.replace(/,/g, '')); return m && /^\s*[-\d.$]/.test(x.v) ? parseFloat(m[0]) : null; }
+      if (x.v == null && x.f) return evalFormula(g, x.f, 0);
+      return null;
+    };
+    const bool = (r, c) => { const v = raw(r, c); return v === true || (typeof v === 'string' && /^(true|yes|y|x|✓|✔|1)$/i.test(v.trim())); };
+    const isBlank = (r, c) => { const v = raw(r, c); return v == null || (typeof v === 'string' && v.trim() === ''); };
+    const find = (re, pred) => {
+      for (let r = 1; r <= g.maxR; r++) for (let c = 1; c <= g.maxC; c++) {
+        const v = raw(r, c);
+        if (typeof v === 'string' && re.test(v.trim()) && (!pred || pred(r, c))) return { r, c };
+      }
+      return null;
+    };
+    const findAll = (re) => {
+      const out = [];
+      for (let r = 1; r <= g.maxR; r++) for (let c = 1; c <= g.maxC; c++) {
+        const v = raw(r, c);
+        if (typeof v === 'string' && re.test(v.trim())) out.push({ r, c, t: v.trim() });
+      }
+      return out;
+    };
+    // First non-empty value to the right of a label (within a few cells).
+    const rightOf = (p, span) => {
+      if (!p) return null;
+      for (let c = p.c + 1; c <= p.c + (span || 3); c++) { const n = numAt(p.r, c); if (n != null) return n; if (!isBlank(p.r, c)) return null; }
+      return null;
+    };
+    const rightText = (p) => {
+      if (!p) return '';
+      for (let c = p.c + 1; c <= p.c + 3; c++) if (!isBlank(p.r, c)) return text(p.r, c);
+      return '';
+    };
+
+    const s = newState();
+    s.categories = [];
+    s.battery.fieldNotes = {};
+    if (sheetName) s.meta.title = sheetName;
+
+    // ---- BOM sections
+    const leftCol = (r, c) => c <= 3;
+    const tOn = find(/^onboard bom$/i, leftCol);
+    const tOff = find(/^offboard bom$/i, leftCol);
+    const tTool = find(/^tooling$/i, leftCol);
+    const headerAfter = (r0, c0) => {
+      for (let r = r0; r <= Math.min(g.maxR, r0 + 4); r++) if (/^component$/i.test(text(r, c0).trim())) return r;
+      return null;
+    };
+    const baseCol = tOn ? tOn.c : 1;
+    let hdrOn = tOn ? headerAfter(tOn.r + 1, baseCol) : null;
+    if (!hdrOn) { const h = find(/^component$/i, (r, c) => c <= 3); hdrOn = h ? h.r : null; }
+    if (!hdrOn) throw new Error('Could not find the BOM header row (a "Component" column heading).');
+
+    const COLMAP = [
+      ['component', /^component/], ['confirmed', /^confirm/], ['part', /^part/], ['qty', /^(qty|quantity)/],
+      ['acc', /^accessor/], ['batt', /^batter/], ['motor', /^motor/], ['esc', /^esc/], ['prop', /^prop/],
+      ['notes', /^notes?/], ['unitWt', /^unit\s*w/], ['totalWt', /^total\s*w/], ['fullPrice', /^(full|pack)\s*price/],
+      ['unitPrice', /^(item|unit)\s*price/], ['cost', /^cost/], ['reqSent', /^request/], ['procured', /^procured/], ['store', /^(store|supplier|vendor)/],
+    ];
+    const DEFAULT_COLS = { component: 1, confirmed: 2, part: 3, qty: 4, acc: 5, batt: 6, motor: 7, esc: 8, prop: 9, notes: 10, unitWt: 11, totalWt: 12, fullPrice: 13, unitPrice: 14, cost: 15, reqSent: 16, procured: 17, store: 18 };
+    const col = Object.assign({}, DEFAULT_COLS);
+    let lastCol = 18;
+    for (let c = baseCol; c <= Math.min(g.maxC, baseCol + 25); c++) {
+      const t = text(hdrOn, c).trim().toLowerCase();
+      if (!t) continue;
+      const hit = COLMAP.find(([, re]) => re.test(t));
+      if (hit) { col[hit[0]] = c; lastCol = Math.max(lastCol, c); }
+      const cur = /\(([A-Z]{3})\)/.exec(text(hdrOn, c));
+      if (cur && hit && /price|cost/i.test(hit[0])) s.meta.currency = cur[1];
+    }
+    const FIRST = Math.min.apply(null, Object.values(col));
+
+    function readItem(r, withFlags) {
+      const it = newItem();
+      it.component = text(r, col.component).trim();
+      it.part = text(r, col.part).trim();
+      it.confirmed = bool(r, col.confirmed);
+      const q = numAt(r, col.qty);
+      it.qty = q == null ? null : q;
+      if (withFlags) FLAGS.forEach((f) => { it[f.key] = bool(r, col[f.key]); });
+      it.notes = text(r, col.notes).replace(/\s+$/, '');
+      const kw = raw(r, col.unitWt);
+      const kn = numAt(r, col.unitWt);
+      it.unitWt = isNum(kw) || (kw == null && kn != null) ? kn : kw == null ? null : String(kw).trim() || null;
+      const full = numAt(r, col.fullPrice);
+      const unit = numAt(r, col.unitPrice);
+      const cost = numAt(r, col.cost);
+      if (full != null) {
+        it.fullPrice = full;
+        if (unit != null && unit > 0) {
+          const ratio = full / unit;
+          const k = Math.round(ratio);
+          if (k >= 1 && Math.abs(ratio - k) < 1e-6) it.pack = k;
+          else { it.fullPrice = unit; it.pack = 1; }
+        }
+      } else if (unit != null && !(cell(r, col.unitPrice).f && cell(r, col.unitPrice).v == null)) {
+        it.fullPrice = unit;
+      } else if (cost != null && num(it.qty) > 0) {
+        it.fullPrice = cost / num(it.qty);
+      }
+      if (it.fullPrice === 0 && full == null) it.fullPrice = null;
+      const ct = raw(r, col.cost);
+      if (typeof ct === 'string' && !isNum(numAt(r, col.cost))) it.costNote = ct.trim();
+      it.reqSent = bool(r, col.reqSent);
+      it.procured = bool(r, col.procured);
+      it.store = text(r, col.store).trim();
+      return it;
+    }
+
+    const sectionStarts = [tOff, tTool].filter(Boolean).map((p) => p.r);
+    const endOf = (r0) => { const later = sectionStarts.filter((r) => r > r0); return later.length ? Math.min.apply(null, later) - 1 : g.maxR; };
+    const rowEmpty = (r) => { for (let c = FIRST; c <= lastCol; c++) if (!isBlank(r, c)) return false; return true; };
+    const isTotalRow = (r) => { for (let c = FIRST; c <= lastCol; c++) { const t = text(r, c).trim(); if (/subtotal|^total$/i.test(t)) return true; } return false; };
+    const isCatRow = (r) => {
+      if (isBlank(r, col.component)) return false;
+      for (let c = FIRST; c <= lastCol; c++) if (c !== col.component && !isBlank(r, c)) return false;
+      return true;
+    };
+
+    let cur = null;
+    for (let r = hdrOn + 1; r <= endOf(hdrOn); r++) {
+      if (rowEmpty(r) || isTotalRow(r)) continue;
+      if (isCatRow(r)) { cur = newCategory(text(r, col.component).trim()); s.categories.push(cur); continue; }
+      if (!cur) { cur = newCategory('GENERAL'); s.categories.push(cur); }
+      cur.items.push(readItem(r, true));
+    }
+    if (!s.categories.length) s.categories.push(newCategory('GENERAL'));
+
+    function readList(title) {
+      if (!title) return [];
+      const h = headerAfter(title.r + 1, title.c) || title.r + 1;
+      const out = [];
+      for (let r = h + 1; r <= endOf(h); r++) {
+        if (rowEmpty(r) || isTotalRow(r) || isCatRow(r) && false) continue;
+        out.push(readItem(r, false));
+      }
+      return out;
+    }
+    s.offboard = readList(tOff);
+    s.tooling = readList(tTool);
+
+    // ---- battery & system
+    const cellsCell = find(/^no\.?\s*(of\s*)?cells$/i);
+    const vCell = find(/^v\s*supplied/i);
+    const effEsc = find(/^(η|eta|n)[_ ]?esc/i);
+    const hover = find(/motors?\s+at\s+hover/i);
+    if (vCell) s.elec.vSupply = rightOf(vCell, 1);
+    if (effEsc) s.elec.escEff = rightOf(effEsc, 1);
+    if (hover) s.elec.hoverW = rightOf(hover, 1);
+    const escRating = find(/^esc rating/i);
+    if (escRating) s.elec.escRatingA = rightOf(escRating, 1);
+    const thrust = find(/^max thrust per motor/i);
+    if (thrust) s.elec.thrustG = rightOf(thrust, 1);
+
+    const fieldHdr = find(/^field$/i, (r, c) => /^value$/i.test(text(r, c + 1).trim()));
+    const fields = {};
+    if (fieldHdr) {
+      for (let r = fieldHdr.r + 1; r <= g.maxR; r++) {
+        const lab = text(r, fieldHdr.c).trim();
+        if (!lab) break;
+        const f = BATTERY_FIELDS.find((x) => x.label.toLowerCase() === lab.toLowerCase());
+        if (!f) continue;
+        fields[f.key] = { v: raw(r, fieldHdr.c + 1), n: numAt(r, fieldHdr.c + 1), note: text(r, fieldHdr.c + 2).trim() };
+        if (fields[f.key].note) s.battery.fieldNotes[f.key] = fields[f.key].note;
+      }
+    }
+    const b = s.battery;
+    if (fields.type && fields.type.v != null) b.type = String(fields.type.v).trim();
+    if (fields.config && typeof fields.config.v === 'string') {
+      const m = /(\d+)\s*S(?:\s*(\d+)\s*P)?/i.exec(fields.config.v);
+      if (m) { b.cells = +m[1]; b.parallel = m[2] ? +m[2] : 1; }
+    }
+    if (cellsCell) { const n = rightOf(cellsCell, 1); if (n) b.cells = n; }
+    if (fields.capacity && fields.capacity.n != null) b.capacity = fields.capacity.n;
+    if (fields.maxDischarge && fields.maxDischarge.n != null) {
+      const n = fields.maxDischarge.n;
+      b.maxDischarge = n <= 1 && !/%/.test(String(fields.maxDischarge.v)) ? n * 100 : n;
+    }
+    if (fields.resistance && fields.resistance.n != null) b.resistance = /mΩ|mohm|milli/i.test(String(fields.resistance.v)) ? fields.resistance.n / 1000 : fields.resistance.n;
+    if (fields.cellV && fields.cellV.n != null) b.cellV = fields.cellV.n;
+    if (fields.cCont && fields.cCont.n != null) b.cCont = fields.cCont.n;
+    if (fields.cMax && fields.cMax.n != null) b.cMax = fields.cMax.n;
+    if (!vCell && b.cells && b.cellV) s.elec.vSupply = +(b.cells * b.cellV).toFixed(2);
+
+    const free = find(/^for free version/i);
+    if (free) b.freeSpec = text(free.r + 1, free.c).trim();
+    const bn = find(/^notes:$/i);
+    if (bn) {
+      for (let r = bn.r + 1, gap = 0; r <= g.maxR && gap < 2; r++) {
+        const t = text(r, bn.c).trim();
+        if (t) { b.notes.push(t); gap = 0; } else gap++;
+      }
+    }
+
+    // ---- power supplies and loads
+    const supByName = new Map();
+    const getSupply = (name) => {
+      const key = name.trim().toLowerCase();
+      if (key === 'battery' || key === 'batt' || key === '') return 'battery';
+      if (!supByName.has(key)) { const sp = newSupply({ name: name.trim(), eff: 100, vout: 5 }); supByName.set(key, sp); s.supplies.push(sp); }
+      return supByName.get(key).id;
+    };
+    const supBlock = find(/^power supplies$/i);
+    const supLinks = [];
+    if (supBlock) {
+      for (let r = supBlock.r + 2; r <= g.maxR; r++) {
+        const name = text(r, supBlock.c).trim();
+        if (!name) break;
+        const id = getSupply(name);
+        const sp = s.supplies.find((x) => x.id === id);
+        sp.vout = numAt(r, supBlock.c + 1);
+        sp.maxA = numAt(r, supBlock.c + 2);
+        supLinks.push({ sp, item: text(r, supBlock.c + 3).trim(), from: text(r, supBlock.c + 4).trim() });
+      }
+    }
+    const cdTitle = find(/^current draw$/i);
+    const loadHdr = find(/^i[_ ]?accessories$/i, cdTitle ? (r, c) => c === cdTitle.c : null);
+    const loadLinks = [];
+    const lossEff = {};
+    if (loadHdr) {
+      const c = loadHdr.c;
+      for (let r = loadHdr.r + 1, gap = 0; r <= g.maxR && gap < 3; r++) {
+        const lab = text(r, c).trim();
+        if (/^sub-?total$/i.test(text(r, c + 1).trim()) || /^sub-?total$/i.test(lab) || /^inputs$/i.test(lab)) break;
+        if (!lab) { gap++; continue; }
+        gap = 0;
+        const loss = /^(.*?)\s+loss\b.*?(?:η|eta|n)\s*=\s*(\d+(?:\.\d+)?)\s*%/i.exec(lab);
+        if (/\bloss\b/i.test(lab)) { if (loss) lossEff[loss[1].trim().toLowerCase()] = +loss[2]; continue; }
+        const m = /^(.*?)\s*\((?:via|from)\s+(.+?)\)\s*$/i.exec(lab);
+        const ld = newLoad({ name: m ? m[1].trim() : lab, supply: m ? getSupply(m[2]) : 'battery', watts: numAt(r, c + 1) || 0 });
+        s.loads.push(ld);
+        loadLinks.push({ ld, item: text(r, c + 3).trim() });
+      }
+    }
+    // Efficiencies from the Inputs block (η_ubec (%) etc.), then from loss labels.
+    findAll(/^(η|eta)[_ ]?(.+?)\s*\(%\)$/i).forEach((p) => {
+      const m = /^(?:η|eta)[_ ]?(.+?)\s*\(%\)$/i.exec(p.t);
+      const key = m[1].trim().toLowerCase();
+      if (key === 'esc') return;
+      const sp = supByName.get(key);
+      if (sp) sp.eff = rightOf(p, 1);
+    });
+    Object.keys(lossEff).forEach((k) => { const sp = supByName.get(k); if (sp && (sp.eff == null || sp.eff === 100)) sp.eff = lossEff[k]; });
+    s.supplies.forEach((sp) => { if (sp.eff == null) sp.eff = 100; });
+
+    // Link supplies and loads to BOM items: exact label first, then by shared words.
+    const items = allItems(s);
+    const GENERIC = new Set(['via', 'the', 'and', 'for', 'module', 'sensor', 'radio', 'board', 'kit', 'cable', 'x2', 'male', 'female']);
+    const words = (t) => (t || '').toLowerCase().split(/[^a-z0-9]+/).filter((w) => w.length >= 2 && !GENERIC.has(w));
+    const matchItem = (label, name) => {
+      if (label) { const ex = items.find((it) => itemLabel(it).toLowerCase() === label.toLowerCase() || it.component.toLowerCase() === label.toLowerCase()); if (ex) return ex.id; }
+      const want = words(name);
+      let best = null, bestScore = 0;
+      items.forEach((it) => {
+        const have = new Set(words(it.component + ' ' + it.part));
+        const score = want.filter((w) => have.has(w)).length;
+        if (score > bestScore) { best = it; bestScore = score; }
+      });
+      if (best) return best.id;
+      if (/\bbec\b|ubec|buck|regulat/i.test(name)) { const it = items.find((x) => /\bbec\b|ubec|buck|regulat/i.test(x.component + ' ' + x.part)); if (it) return it.id; }
+      return null;
+    };
+    loadLinks.forEach(({ ld, item }) => { ld.itemId = item === '-' ? null : matchItem(item, ld.name); });
+    s.supplies.forEach((sp) => { const l = supLinks.find((x) => x.sp === sp); sp.itemId = matchItem(l && l.item, sp.name); });
+    supLinks.forEach(({ sp, from }) => { if (from) { const id = getSupply(from); sp.from = id === sp.id ? 'battery' : id; } });
+    // Guess output voltage and current limit from item notes ("5V 3A") when not given.
+    s.supplies.forEach((sp) => {
+      if (supLinks.some((x) => x.sp === sp)) return;
+      const it = items.find((x) => x.id === sp.itemId);
+      const t = it ? it.notes + ' ' + it.part : '';
+      const m = /\bto\s+(\d+(?:\.\d+)?)\s*V\b|(\d+(?:\.\d+)?)\s*V\s+\d+(?:\.\d+)?\s*A\b/i.exec(t);
+      if (m) sp.vout = +(m[1] || m[2]);
+      const a = /\d\s*V\s+(\d+(?:\.\d+)?)\s*A\b/i.exec(t);
+      if (a) sp.maxA = +a[1];
+    });
+
+    // ---- eCalc outputs and checks
+    const outBlock = find(/^ecalc outputs$/i);
+    if (outBlock) {
+      for (let r = outBlock.r + 1; r <= Math.min(g.maxR, outBlock.r + 20); r++) {
+        const lab = text(r, outBlock.c).trim().toLowerCase();
+        const f = ECALC_OUTPUTS.find((x) => x.label.toLowerCase() === lab);
+        if (!f) continue;
+        const v = numAt(r, outBlock.c + 1);
+        if (f.key === 'hoverW') { if (v != null) s.elec.hoverW = v; } else s.ecalc[f.key] = v;
+      }
+    }
+    const rep = find(/^ecalc'?s output \(g\)$/i);
+    if (rep && s.ecalc.auw == null) s.ecalc.auw = rightOf(rep);
+
+    // ---- free notes (a NOTES heading outside the BOM header rows)
+    const bomHeaderRows = new Set([hdrOn]);
+    [tOff, tTool].forEach((t) => { if (t) bomHeaderRows.add(headerAfter(t.r + 1, t.c)); });
+    const nh = find(/^notes$/i, (r) => !bomHeaderRows.has(r));
+    if (nh) {
+      for (let r = nh.r + 1; r <= g.maxR; r++) {
+        const t = text(r, nh.c).trim();
+        if (t) s.notes.push(t);
+      }
+    }
+    return normalize(s);
+  }
+
+  async function importXlsx(ExcelJS, buffer) {
+    const wb = new ExcelJS.Workbook();
+    await wb.xlsx.load(buffer);
+    if (!wb.worksheets.length) throw new Error('The file has no sheets.');
+    const ws = wb.worksheets.find((w) => {
+      let hit = false;
+      w.eachRow((row) => { row.eachCell((c) => { if (typeof c.value === 'string' && /^onboard bom$/i.test(c.value.trim())) hit = true; }); });
+      return hit;
+    }) || wb.worksheets[0];
+    return parseGrid(gridFromExcelJS(ws), ws.name);
+  }
+
+  // ---------------------------------------------------------------- export
+
+  const C = { dark: 'FF434343', mid: 'FFCCCCCC', light: 'FFEFEFEF', white: 'FFFFFFFF' };
+  const FMT = { wt: '#,##0.0', money: '"$"#,##0.00', amps: '0.000', w: '0.00' };
+  const COL_WIDTHS = { A: 22.43, B: 8.71, C: 24.29, D: 7, E: 5.86, J: 43.29, K: 12.29, L: 30, M: 15.71, N: 15.43, O: 12, P: 19, Q: 8.71, T: 16, U: 14.71, V: 4, W: 30, X: 15, Y: 17.29, Z: 26, AA: 14, AB: 31, AC: 14.43, AD: 22, AG: 30, AH: 14, AY: 60 };
+
+  function titleCase(name) {
+    return String(name || '').toLowerCase().split(/\s+/).map((w) => (w.length <= 2 ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1))).join(' ');
+  }
+  const sheetSafe = (t) => (String(t || 'BOM').replace(/[\[\]:*?/\\]/g, '-').trim() || 'BOM').slice(0, 31);
+  const fmtNum = (n) => (Math.round(n * 100) / 100).toString();
+
+  function buildWorkbook(ExcelJS, state) {
+    const s = normalize(state);
+    const cur = s.meta.currency || 'AUD';
+    const wb = new ExcelJS.Workbook();
+    wb.creator = 'BOM Builder';
+    const ws = wb.addWorksheet(sheetSafe(s.meta.title), { views: [{ state: 'frozen', xSplit: 3, ySplit: 2 }] });
+    Object.keys(COL_WIDTHS).forEach((k) => { ws.getColumn(k).width = COL_WIDTHS[k]; });
+
+    const put = (a, v, st) => {
+      const cl = ws.getCell(a);
+      if (typeof v === 'string' && v.startsWith('=')) cl.value = { formula: v.slice(1) };
+      else cl.value = v === undefined ? null : v;
+      st = st || {};
+      const font = { name: 'Calibri', size: st.size || 10 };
+      if (st.bold) font.bold = true;
+      if (st.fill === 'dark') font.color = { argb: C.white };
+      cl.font = font;
+      if (st.fill) cl.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: C[st.fill] } };
+      if (st.fmt) cl.numFmt = st.fmt;
+      if (st.wrap) cl.alignment = { wrapText: true, vertical: 'top' };
+      return cl;
+    };
+    const title = (a, v) => put(a, v, { bold: true, fill: 'dark', size: 12 });
+    const hdr = (a, v) => put(a, v, { bold: true, fill: 'dark' });
+
+    // ---- left: BOM sections
+    const HEAD = ['Component', 'Confirmed', 'Part / Source', 'Qty', 'Accessory', 'Battery', 'Motors', 'ESC', 'Props', 'Notes', 'Unit Wt (g)', 'Total Wt (g)', 'Full Price (packs etc)', 'Item Price (' + cur + ')', 'Cost (' + cur + ')', 'Request Sent', 'Procured', 'Store'];
+    const writeHeader = (r) => HEAD.forEach((h, i) => hdr(addr(r, i + 1), h));
+
+    function writeItem(r, it, onboard) {
+      put('A' + r, it.component || null, { bold: onboard });
+      put('B' + r, !!it.confirmed);
+      put('C' + r, it.part || null);
+      put('D' + r, it.qty == null || it.qty === '' ? null : num(it.qty));
+      if (onboard) FLAGS.forEach((f, i) => put(addr(r, 5 + i), !!it[f.key]));
+      put('J' + r, it.notes || null, { wrap: true });
+      const wtNum = isNum(it.unitWt) || (typeof it.unitWt === 'string' && it.unitWt.trim() !== '' && isFinite(+it.unitWt));
+      if (wtNum) { put('K' + r, num(it.unitWt)); put('L' + r, '=K' + r + '*D' + r, { fmt: FMT.wt }); } else if (it.unitWt) {
+        put('K' + r, String(it.unitWt));
+        if (String(it.unitWt).trim() === '-') put('L' + r, '-');
+      } else if (onboard) put('L' + r, '=K' + r + '*D' + r, { fmt: FMT.wt });
+      const priced = it.fullPrice != null && it.fullPrice !== '';
+      if (priced || (onboard && !it.costNote)) {
+        if (priced) put('M' + r, num(it.fullPrice), { fmt: FMT.money });
+        put('N' + r, packOf(it) > 1 ? '=M' + r + '/' + packOf(it) : '=M' + r, { fmt: FMT.money });
+        put('O' + r, '=N' + r + '*D' + r, { fmt: FMT.money });
+      } else if (it.costNote) put('O' + r, it.costNote);
+      put('P' + r, !!it.reqSent);
+      put('Q' + r, !!it.procured);
+      put('R' + r, it.store || null);
+      if (it.notes && it.notes.length > 60) ws.getRow(r).height = Math.min(120, 13 * Math.ceil(it.notes.length / 55));
+    }
+
+    title('A1', 'ONBOARD BOM');
+    title('P1', 'PROCUREMENT');
+    writeHeader(2);
+    let r = 3;
+    const catRows = [];
+    const priceRows = [];
+    s.categories.forEach((cat, ci) => {
+      if (ci > 0) r++;
+      for (let c = 1; c <= 18; c++) put(addr(r, c), c === 1 ? cat.name : null, { bold: true, fill: 'mid' });
+      r++;
+      const a = r;
+      cat.items.forEach((it) => { writeItem(r, it, true); priceRows.push({ r, it }); r++; });
+      const b = r - 1;
+      put('K' + r, String(cat.name).toUpperCase() + ' SUBTOTAL', { bold: true });
+      put('L' + r, cat.items.length ? '=SUM(L' + a + ':L' + b + ')' : 0, { bold: true, fmt: FMT.wt });
+      put('O' + r, cat.items.length ? '=SUM(O' + a + ':O' + b + ')' : 0, { bold: true, fmt: FMT.money });
+      catRows.push({ name: cat.name, sub: r });
+      r++;
+    });
+    const onA = 4, onB = Math.max(4, r - 1);
+
+    function writeList(label, list, toolingRows) {
+      r += 3;
+      title('A' + r, label);
+      r++;
+      writeHeader(r);
+      r++;
+      const a = r;
+      list.forEach((it) => { writeItem(r, it, false); if (toolingRows) toolingRows.push({ r, it }); r++; });
+      const b = r - 1;
+      put('L' + r, 'Total', { bold: true });
+      put('O' + r, list.length ? '=SUM(O' + a + ':O' + b + ')' : 0, { bold: true, fmt: FMT.money });
+      const total = r;
+      r++;
+      return total;
+    }
+    const offTotal = writeList('OFFBOARD BOM', s.offboard);
+    const toolRows = [];
+    const toolTotal = writeList('TOOLING', s.tooling, toolRows);
+
+    // ---- breakdowns (T:U)
+    title('T2', 'BREAKDOWNS');
+    ws.mergeCells('T2:U2');
+    hdr('T3', 'Weight'); hdr('U3', 'grams');
+    let t = 4;
+    const wtStart = t;
+    catRows.forEach((c) => { put('T' + t, titleCase(c.name)); put('U' + t, '=L' + c.sub, { fmt: FMT.wt }); t++; });
+    const wtEnd = t - 1;
+    t++;
+    const auwRow = t;
+    put('T' + t, 'AUW', { bold: true, fill: 'light' });
+    put('U' + t, catRows.length ? '=SUM(U' + wtStart + ':U' + wtEnd + ')' : 0, { fill: 'light', fmt: FMT.wt });
+    t += 2;
+    const battRow = t;
+    put('T' + t, 'Batt W (g)'); put('U' + t, '=SUMIFS(L' + onA + ':L' + onB + ',F' + onA + ':F' + onB + ',TRUE)', { fmt: FMT.wt }); t++;
+    const cellsRow = t;
+    put('T' + t, 'No Cells'); put('U' + t, num(s.battery.cells)); t++;
+    const cellWRow = t;
+    put('T' + t, 'Cell W (g)'); put('U' + t, '=IFERROR(U' + battRow + '/U' + cellsRow + ',0)', { fmt: FMT.wt }); t += 2;
+    hdr('T' + t, 'Cost'); hdr('U' + t, '(' + cur + ')'); t++;
+    const cStart = t;
+    catRows.forEach((c) => { put('T' + t, titleCase(c.name)); put('U' + t, '=O' + c.sub, { fmt: FMT.money }); t++; });
+    put('T' + t, 'Total Build Cost', { bold: true, fill: 'light' });
+    put('U' + t, catRows.length ? '=SUM(U' + cStart + ':U' + (t - 1) + ')' : 0, { fill: 'light', fmt: FMT.money });
+    t += 2;
+    // Whole packs still to buy for anything not yet procured.
+    const spend = priceRows.concat(toolRows).filter((x) => x.it.fullPrice != null && x.it.fullPrice !== '').map(({ r: rr, it }) => {
+      const pk = packOf(it);
+      return 'IF(Q' + rr + ',0,' + (pk === 1 ? 'D' + rr : 'ROUNDUP(D' + rr + '/' + pk + ',0)') + '*M' + rr + ')';
+    });
+    put('T' + t, 'Still to procure', { bold: true, fill: 'light' });
+    put('U' + t, spend.length ? '=' + spend.join('+') : 0, { fill: 'light', fmt: FMT.money });
+    t += 2;
+    hdr('T' + t, 'Other'); hdr('U' + t, '(' + cur + ')'); t++;
+    const oStart = t;
+    put('T' + t, 'Tooling'); put('U' + t, '=O' + toolTotal, { fmt: FMT.money }); t++;
+    put('T' + t, 'Offboard'); put('U' + t, '=O' + offTotal, { fmt: FMT.money }); t++;
+    put('T' + t, 'Total Other Cost', { bold: true, fill: 'light' });
+    put('U' + t, '=SUM(U' + oStart + ':U' + (t - 1) + ')', { fill: 'light', fmt: FMT.money });
+
+    // ---- current draw (W:Z)
+    const tree = powerTree(s);
+    const flat = flatSupplies(tree);
+    title('W2', 'CURRENT DRAW');
+    hdr('W3', 'Component'); hdr('X3', 'P (W) from spec'); hdr('Y3', 'I (A)'); hdr('Z3', 'BOM item');
+    put('W4', 'Total System Current Draw');
+    put('W5', 'Current draw required from battery');
+    put('W7', 'I_motors', { bold: true, fill: 'mid' });
+    // Rows below depend on how many loads there are; work them out first.
+    const loadRows = [];
+    let w = 18;
+    const lossRowOf = new Map();
+    const items = allItems(s);
+    function layout(node) {
+      const start = loadRows.length;
+      node.loads.forEach((ld) => { loadRows.push({ kind: 'load', ld, node, r: w++ }); });
+      node.kids.forEach((k) => layout(k));
+      if (node.supply) {
+        const refs = loadRows.slice(start).map((x) => x.r);
+        const row = { kind: 'loss', node, r: w++, refs };
+        loadRows.push(row);
+        lossRowOf.set(node.supply.id, row);
+      }
+    }
+    layout(tree);
+    const accA = 18, accB = Math.max(18, w - 1);
+    const accSub = w;
+    const inputsHdr = accSub + 2;
+    const vRow = inputsHdr + 1;
+    const escRow = vRow + 1;
+    const effRow = new Map();
+    let ir = escRow + 1;
+    flat.forEach((n) => { effRow.set(n.supply.id, ir++); });
+    const escRatingRow = ir++;
+    const thrustRow = ir++;
+    const V = '$X$' + vRow;
+    const hoverOutRow = 4 + ECALC_OUTPUTS.findIndex((x) => x.key === 'hoverW');
+
+    put('W9', (computeMotorCount(s) || 4) + 'x Motors at hover');
+    put('X9', '=AH' + hoverOutRow, { fmt: FMT.w });
+    put('Y9', '=IFERROR(X9/' + V + ',0)', { fmt: FMT.amps });
+    put('X11', 'Sub-Total', { bold: true }); put('Y11', '=Y9', { fmt: FMT.amps });
+    put('W13', 'I_ESCloss', { bold: true, fill: 'mid' });
+    put('W14', 'ESC loss  P*(1-η)'); put('X14', '=X9*(1-X' + escRow + '/100)', { fmt: FMT.w }); put('Y14', '=IFERROR(X14/' + V + ',0)', { fmt: FMT.amps });
+    put('X15', 'Sub-Total', { bold: true }); put('Y15', '=Y14', { fmt: FMT.amps });
+    put('W17', 'I_accessories', { bold: true, fill: 'mid' });
+    loadRows.forEach((x) => {
+      if (x.kind === 'load') {
+        const sp = x.node.supply;
+        put('W' + x.r, (x.ld.name || '(unnamed load)') + (sp ? ' (via ' + sp.name + ')' : ''));
+        put('X' + x.r, num(x.ld.watts), { fmt: FMT.w });
+        const it = items.find((i) => i.id === x.ld.itemId);
+        put('Z' + x.r, it ? itemLabel(it) : null);
+      } else {
+        const sp = x.node.supply;
+        put('W' + x.r, sp.name + ' loss (η=' + fmtNum(num(sp.eff) || 100) + '%)');
+        const sum = x.refs.length ? 'SUM(' + x.refs.map((q) => 'X' + q).join(',') + ')' : '0';
+        put('X' + x.r, '=' + sum + '*(1/(X' + effRow.get(sp.id) + '/100)-1)', { fmt: FMT.w });
+      }
+      put('Y' + x.r, '=IFERROR(X' + x.r + '/' + V + ',0)', { fmt: FMT.amps });
+    });
+    put('X' + accSub, 'Sub-Total', { bold: true });
+    put('Y' + accSub, loadRows.length ? '=SUM(Y' + accA + ':Y' + accB + ')' : 0, { fmt: FMT.amps });
+    put('Y4', '=Y11+Y15+Y' + accSub, { fmt: FMT.amps });
+
+    put('W' + inputsHdr, 'Inputs', { bold: true, fill: 'mid' });
+    put('W' + vRow, 'V Supplied (V)'); put('X' + vRow, num(s.elec.vSupply));
+    put('Y' + vRow, 'For ' + num(s.battery.capacity) + 'mah ' + num(s.battery.cells) + 'S Lipo');
+    put('W' + escRow, 'η_esc (%)'); put('X' + escRow, num(s.elec.escEff));
+    flat.forEach((n) => { put('W' + effRow.get(n.supply.id), 'η_' + n.supply.name.toLowerCase() + ' (%)'); put('X' + effRow.get(n.supply.id), num(n.supply.eff) || 100); });
+    put('W' + escRatingRow, 'ESC rating (A per motor)'); put('X' + escRatingRow, s.elec.escRatingA == null ? null : num(s.elec.escRatingA));
+    put('W' + thrustRow, 'Max thrust per motor (g)'); put('X' + thrustRow, s.elec.thrustG == null ? null : num(s.elec.thrustG));
+
+    let pr = thrustRow + 3;
+    title('W' + pr, 'POWER SUPPLIES');
+    pr++;
+    hdr('W' + pr, 'Supply'); hdr('X' + pr, 'V out (V)'); hdr('Y' + pr, 'Max I (A)'); hdr('Z' + pr, 'BOM item'); hdr('AA' + pr, 'Fed from');
+    pr++;
+    flat.forEach((n) => {
+      const sp = n.supply;
+      const it = items.find((i) => i.id === sp.itemId);
+      const par = supplyParent(s, sp);
+      put('W' + pr, sp.name);
+      put('X' + pr, sp.vout == null || sp.vout === '' ? null : num(sp.vout));
+      put('Y' + pr, sp.maxA == null || sp.maxA === '' ? null : num(sp.maxA));
+      put('Z' + pr, it ? itemLabel(it) : null);
+      put('AA' + pr, par === 'battery' ? 'Battery' : s.supplies.find((x) => x.id === par).name);
+      pr++;
+    });
+
+    // ---- eCalc inputs and battery spec (AB:AD)
+    title('AB2', 'eCALC INPUTS');
+    put('AB3', 'AUW', { fill: 'mid' }); put('AC3', '=U' + auwRow, { fill: 'mid', fmt: FMT.wt });
+    put('AB4', 'Model Weight incl drive'); put('AC4', '=AC3-AC8', { fmt: FMT.wt });
+    put('AB5', 'Model Weight w/o batt'); put('AC5', '=U' + auwRow + '-U' + battRow, { fmt: FMT.wt });
+    put('AB6', 'Model Weight w/o drive'); put('AC6', '=U' + auwRow + '-AC7', { fmt: FMT.wt });
+    put('AB7', 'Drive (mtrs, batt, esc, props)');
+    put('AC7', '=' + ['F', 'G', 'H', 'I'].map((c) => 'SUMIFS(L' + onA + ':L' + onB + ',' + c + onA + ':' + c + onB + ',TRUE)').join('+'), { fmt: FMT.wt });
+    put('AB8', 'Accessories'); put('AC8', '=SUMPRODUCT(--(E' + onA + ':E' + onB + '=TRUE),D' + onA + ':D' + onB + ',K' + onA + ':K' + onB + ')', { fmt: FMT.wt });
+    hdr('AB10', 'I Draw'); hdr('AC10', 'A');
+    put('AB11', 'I_accessory'); put('AC11', '=Y' + accSub, { fmt: FMT.amps });
+    put('AB12', 'I_total'); put('AC12', '=Y4', { fmt: FMT.amps });
+    hdr('AB13', 'Battery Spec');
+    put('AB14', 'For Free Version of eCalcs', { bold: true, fill: 'light' });
+    put('AB15', s.battery.freeSpec || freeSpecText(s));
+    put('AB17', 'Custom specs for paid version', { bold: true, fill: 'light' });
+    put('AB18', 'Field', { bold: true }); put('AC18', 'Value', { bold: true }); put('AD18', 'Notes', { bold: true });
+    const b = s.battery;
+    const fieldVals = {
+      type: [b.type || 'Custom'],
+      config: [num(b.cells) + 'S ' + (num(b.parallel) || 1) + 'P'],
+      capacity: [num(b.capacity), '0 "mAh"'],
+      maxDischarge: [num(b.maxDischarge) / 100, '0%'],
+      resistance: [num(b.resistance), '0.000 "Ω"'],
+      cellV: [num(b.cellV), '0.00 "V"'],
+      cCont: [b.cCont == null ? null : num(b.cCont), '0 "C"'],
+      cMax: [b.cMax == null ? null : num(b.cMax), '0 "C"'],
+      cellWt: ['=U' + cellWRow, FMT.wt],
+    };
+    const fieldRow = {};
+    BATTERY_FIELDS.forEach((f, i) => {
+      const rr = 19 + i;
+      fieldRow[f.key] = rr;
+      put('AB' + rr, f.label);
+      put('AC' + rr, fieldVals[f.key][0], { fmt: fieldVals[f.key][1] });
+      put('AD' + rr, (b.fieldNotes && b.fieldNotes[f.key]) || null);
+    });
+    let nr = 19 + BATTERY_FIELDS.length + 1;
+    if (b.notes.length) {
+      put('AB' + nr, 'Notes:'); nr++;
+      b.notes.forEach((n) => {
+        put('AB' + nr, n, { wrap: true });
+        ws.mergeCells('AB' + nr + ':AD' + nr);
+        ws.getRow(nr).height = Math.min(160, 13 * Math.max(1, Math.ceil(n.length / 75)));
+        nr++;
+      });
+    }
+
+    // ---- eCalc outputs, AUW check, estimates (AG:AH)
+    title('AG2', 'eCALC OUTPUTS');
+    ws.mergeCells('AG2:AH2');
+    hdr('AG3', 'Output'); hdr('AH3', 'Value');
+    const outRow = {};
+    ECALC_OUTPUTS.forEach((f, i) => {
+      const rr = 4 + i;
+      outRow[f.key] = rr;
+      const v = f.key === 'hoverW' ? s.elec.hoverW : s.ecalc[f.key];
+      put('AG' + rr, f.label);
+      put('AH' + rr, v == null || v === '' ? null : num(v), { fmt: f.fmt });
+    });
+    let er = 4 + ECALC_OUTPUTS.length + 1;
+    hdr('AG' + er, 'AUW check'); hdr('AH' + er, 'g'); er++;
+    put('AG' + er, 'calculated input (g)'); put('AH' + er, '=AC3', { fmt: FMT.wt }); er++;
+    put('AG' + er, "ecalc's output (g)"); put('AH' + er, '=IF(AH' + outRow.auw + '="","",AH' + outRow.auw + ')', { fmt: FMT.wt }); er++;
+    put('AG' + er, 'difference (g)'); put('AH' + er, '=IF(AH' + outRow.auw + '="","",AH' + outRow.auw + '-AC3)', { fmt: FMT.wt }); er += 2;
+    hdr('AG' + er, 'Estimates (from BOM)'); hdr('AH' + er, ''); er++;
+    const P = num(b.parallel) || 1;
+    const est = [
+      ['Pack capacity (Ah)', '=AC' + fieldRow.capacity + '/1000*' + P, '0.00'],
+      ['Usable capacity (Ah)', null, '0.00'],
+      ['Hover current (A)', '=Y4', '0.00'],
+      ['Hover flight time (min)', null, '0.0'],
+      ['Max continuous current (A)', '=IF(AC' + fieldRow.cCont + '="","",AC' + fieldRow.cCont + '*AC' + fieldRow.capacity + '/1000*' + P + ')', '0.0'],
+      ['Hover current / max continuous', null, '0.0%'],
+      ['Voltage sag at hover (V)', '=Y4*AC' + fieldRow.resistance + '*U' + cellsRow + '/' + P, '0.00'],
+      ['Hover power (W)', '=' + V + '*Y4', '0.0'],
+      ['Thrust-weight ratio', '=IF(X' + thrustRow + '="","",' + (computeMotorCount(s) || 0) + '*X' + thrustRow + '/AC3)', '0.00'],
+    ];
+    const e0 = er;
+    est[1][1] = '=AH' + e0 + '*AC' + fieldRow.maxDischarge;
+    est[3][1] = '=IFERROR(AH' + (e0 + 1) + '/AH' + (e0 + 2) + '*60,"")';
+    est[5][1] = '=IFERROR(AH' + (e0 + 2) + '/AH' + (e0 + 4) + ',"")';
+    est.forEach(([lab, f, fmt]) => { put('AG' + er, lab); put('AH' + er, f, { fmt }); er++; });
+
+    // ---- notes (AY)
+    put('AY5', 'NOTES', { bold: true });
+    s.notes.forEach((n, i) => put('AY' + (6 + i), n));
+    return wb;
+  }
+
+  function computeMotorCount(s) { return allOnboard(s).filter((i) => i.motor).reduce((a, i) => a + num(i.qty), 0); }
+  function freeSpecText(s) {
+    const b = s.battery;
+    return 'Lipo ' + num(b.capacity) + 'mah' + (b.cCont ? ' ' + num(b.cCont) + (b.cMax ? '/' + num(b.cMax) : '') + 'C' : '') + ' ' + num(b.cells) + 'S' + (num(b.parallel) > 1 ? num(b.parallel) + 'P' : '') + ' ' + num(b.maxDischarge) + '% discharge';
+  }
+
+  const api = {
+    FLAGS, BATTERY_FIELDS, ECALC_OUTPUTS,
+    uid, newItem, newCategory, newSupply, newLoad, newState, normalize,
+    num, isNum, unitPrice, itemCost, itemWt, spendToBuy, allItems, allOnboard, itemLabel,
+    supplyParent, loadSupply, powerTree, compute, freeSpecText, titleCase, sheetSafe,
+    gridFromExcelJS, parseGrid, evalFormula, importXlsx, buildWorkbook, colLetter, colNumber,
+  };
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  else root.BOMCore = api;
+})(typeof self !== 'undefined' ? self : this);
+</script>
+<script>
+/* BOM Builder UI. Plain DOM, one state object, spreadsheet in and out. */
+(function () {
+  'use strict';
+  const K = window.BOMCore;
+  const root = document.getElementById('bom-builder');
+  if (!root || !K) return;
+
+  const STORE_KEY = 'bom-builder-draft-v1';
+  const SAMPLE = window.BOM_SAMPLE ? K.normalize(JSON.parse(JSON.stringify(window.BOM_SAMPLE))) : K.newState();
+
+  let S = loadDraft() || K.normalize(JSON.parse(JSON.stringify(SAMPLE)));
+  let C = K.compute(S);
+  let tab = 'parts';
+  let undoSnap = null;
+  let toastTimer = null;
+
+  // ------------------------------------------------------------ helpers
+
+  const esc = (v) => String(v == null ? '' : v).replace(/[&<>"']/g, (ch) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+  const n = K.num;
+  const fx = (v, d) => (v == null || !isFinite(v) ? '–' : Number(v).toLocaleString('en-AU', { minimumFractionDigits: d, maximumFractionDigits: d }));
+  const sym = () => ({ AUD: '$', USD: '$', NZD: '$', CAD: '$', GBP: '£', EUR: '€', JPY: '¥' }[S.meta.currency] || (S.meta.currency + ' '));
+  const money = (v) => (v == null || !isFinite(v) ? '–' : sym() + fx(v, 2));
+  const pct = (v, d) => (v == null || !isFinite(v) ? '–' : fx(v * 100, d == null ? 0 : d) + '%');
+  const valAttr = (v) => (v == null ? '' : esc(v));
+  const status = (ratio, warnAt, badAt) => (ratio == null ? '' : ratio >= badAt ? 'bad' : ratio >= warnAt ? 'warn' : 'good');
+
+  function saveDraft() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(S)); setSaved('Saved in this browser'); } catch (e) { setSaved('Not saved in this browser — download the spreadsheet to keep your work'); }
+  }
+  function loadDraft() {
+    try { const raw = localStorage.getItem(STORE_KEY); return raw ? K.normalize(JSON.parse(raw)) : null; } catch (e) { return null; }
+  }
+  function setSaved(t) { const el = root.querySelector('[data-saved]'); if (el) el.textContent = t; }
+
+  function findItem(id) {
+    for (const c of S.categories) { const i = c.items.findIndex((x) => x.id === id); if (i >= 0) return { list: c.items, i, cat: c }; }
+    for (const key of ['offboard', 'tooling']) { const i = S[key].findIndex((x) => x.id === id); if (i >= 0) return { list: S[key], i, key }; }
+    return null;
+  }
+  const getItem = (id) => { const f = findItem(id); return f ? f.list[f.i] : null; };
+
+  function target(kind, id) {
+    switch (kind) {
+      case 'item': return getItem(id);
+      case 'cat': return S.categories.find((c) => c.id === id);
+      case 'supply': return S.supplies.find((x) => x.id === id);
+      case 'load': return S.loads.find((x) => x.id === id);
+      case 'elec': return S.elec;
+      case 'batt': return S.battery;
+      case 'fnote': return S.battery.fieldNotes;
+      case 'meta': return S.meta;
+      case 'ecalc': return S.ecalc;
+      default: return null;
+    }
+  }
+
+  function snapshot() { undoSnap = JSON.stringify(S); }
+  function toast(msg, opts) {
+    opts = opts || {};
+    const el = root.querySelector('[data-toast]');
+    el.className = 'toast' + (opts.err ? ' err' : '');
+    el.innerHTML = '<span>' + esc(msg) + '</span>' + (opts.undo && undoSnap ? '<button type="button" data-act="undo">Undo</button>' : '');
+    el.hidden = false;
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { el.hidden = true; }, opts.err ? 9000 : 6000);
+  }
+
+  // ------------------------------------------------------------ rendering: shell
+
+  function shell() {
+    root.innerHTML = `
+      <div class="top">
+        <div class="brand">
+          <span class="eyebrow">BOM Builder</span>
+          <input class="title-input" id="bom-title" type="text" data-k="meta" data-f="title" value="${valAttr(S.meta.title)}" aria-label="Build name">
+        </div>
+        <div class="actions">
+          <button type="button" class="btn" data-act="import">Open spreadsheet</button>
+          <button type="button" class="btn primary" data-act="export">Download spreadsheet</button>
+          <button type="button" class="btn ghost" data-act="example">Load example</button>
+          <button type="button" class="btn ghost" data-act="blank">Start blank</button>
+          <input type="file" id="bom-file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+          <span class="saved" data-saved></span>
+        </div>
+      </div>
+      <div class="gauges" data-panel="gauges"></div>
+      <div class="tabs" role="tablist" data-panel="tabs"></div>
+      <div data-panel="body"></div>
+      <div class="toast" data-toast hidden></div>
+      <div class="footer">
+        <span>Drop an .xlsx file anywhere here to open it. Nothing is uploaded: files are read and written in your browser.</span>
+        <span>Currency <select id="bom-currency" data-k="meta" data-f="currency" data-struct="1" style="width:auto">${['AUD', 'USD', 'NZD', 'CAD', 'GBP', 'EUR', 'JPY'].map((c) => `<option ${c === S.meta.currency ? 'selected' : ''}>${c}</option>`).join('')}</select></span>
+      </div>`;
+  }
+
+  function renderAll() {
+    C = K.compute(S);
+    const t = root.querySelector('#bom-title');
+    if (t && document.activeElement !== t) t.value = S.meta.title;
+    const cur = root.querySelector('#bom-currency');
+    if (cur) cur.value = S.meta.currency;
+    renderGauges();
+    renderTabs();
+    renderBody();
+  }
+
+  function refresh() {
+    C = K.compute(S);
+    renderGauges();
+    renderTabs();
+    root.querySelectorAll('[data-calc]').forEach((el) => { el.textContent = calcText(el.getAttribute('data-calc')); });
+    root.querySelectorAll('[data-live]').forEach((el) => { const [name, arg] = el.getAttribute('data-live').split(':'); const fn = LIVE[name]; if (fn) el.innerHTML = fn(arg); });
+  }
+
+  function warnings() {
+    const w = [];
+    C.elec.supplies.forEach((nd) => { if (nd.util != null && nd.util >= 0.9) w.push(nd.supply.name + ' is at ' + pct(nd.util) + ' of its current rating'); });
+    if (C.elec.headroom != null && C.elec.headroom >= 0.8) w.push('Hover current is ' + pct(C.elec.headroom) + ' of the battery continuous rating');
+    const esc = escCheck();
+    if (esc && esc.cls === 'bad') w.push(esc.text);
+    return w;
+  }
+
+  function renderGauges() {
+    const e = C.elec;
+    const ft = e.flightMin;
+    const w = warnings();
+    const g = [
+      ['All-up weight', fx(C.auw, 1), 'g', C.cats.length + ' sections, ' + K.allOnboard(S).length + ' parts', ''],
+      ['Build cost', money(C.cost.build), '', 'plus ' + money(C.cost.other) + ' tooling & offboard', ''],
+      ['Still to buy', money(C.cost.toProcure), '', K.allOnboard(S).concat(S.tooling).filter((i) => !i.procured).length + ' items not procured', ''],
+      ['Hover current', fx(e.totalI, 2), 'A', fx(e.powerW, 0) + ' W at ' + fx(e.V, 1) + ' V', ''],
+      ['Hover flight time', ft == null ? '–' : fx(ft, 1), ft == null ? '' : 'min', 'on ' + fx(e.usableAh, 2) + ' Ah usable', ft != null && ft < 5 ? 'is-warn' : ''],
+      ['Power checks', w.length ? String(w.length) : 'OK', w.length ? (w.length === 1 ? 'issue' : 'issues') : '', w.length ? w[0] : S.supplies.length + ' supplies, ' + S.loads.length + ' loads', w.length ? 'is-bad' : ''],
+    ];
+    root.querySelector('[data-panel="gauges"]').innerHTML = g.map(([lab, big, unit, sub, cls]) =>
+      `<div class="gauge ${cls}"><span class="lab">${esc(lab)}</span><span class="big">${esc(big)}${unit ? `<small>${esc(unit)}</small>` : ''}</span><span class="sub">${esc(sub)}</span></div>`).join('');
+  }
+
+  function renderTabs() {
+    const w = warnings().length;
+    const tabs = [['parts', 'Parts list'], ['power', 'Power & current'], ['ecalc', 'eCalc'], ['breakdown', 'Breakdown']];
+    root.querySelector('[data-panel="tabs"]').innerHTML = tabs.map(([id, lab]) =>
+      `<button type="button" class="tab" role="tab" id="bom-tab-${id}" aria-selected="${tab === id}" data-act="tab" data-id="${id}">${lab}${id === 'power' && w ? `<span class="count">${w}</span>` : ''}</button>`).join('');
+  }
+
+  function renderBody() {
+    const body = root.querySelector('[data-panel="body"]');
+    body.innerHTML = { parts: partsTab, power: powerTab, ecalc: ecalcTab, breakdown: breakdownTab }[tab]();
+    body.querySelectorAll('textarea[data-grow]').forEach(grow);
+  }
+  function grow(t) { t.style.height = 'auto'; t.style.height = Math.min(t.scrollHeight + 2, 240) + 'px'; }
+
+  // ------------------------------------------------------------ calc text (live cells)
+
+  function calcText(key) {
+    const [what, id] = key.split(':');
+    const it = id ? getItem(id) : null;
+    switch (what) {
+      case 'wt': return it ? (K.isNum(it.unitWt) || (typeof it.unitWt === 'string' && isFinite(+it.unitWt) && it.unitWt.trim() !== '') ? fx(K.itemWt(it), 1) : '–') : '';
+      case 'unit': return it ? money(K.unitPrice(it)) : '';
+      case 'cost': return it ? (K.unitPrice(it) == null ? (it.costNote ? '—' : '–') : money(K.itemCost(it))) : '';
+      case 'catwt': { const c = C.cats.find((x) => x.id === id); return c ? fx(c.wt, 1) + ' g' : ''; }
+      case 'catcost': { const c = C.cats.find((x) => x.id === id); return c ? money(c.cost) : ''; }
+      case 'listcost': return money(S[id].reduce((a, i) => a + K.itemCost(i), 0));
+      case 'listwt': return fx(S[id].reduce((a, i) => a + K.itemWt(i), 0), 1) + ' g';
+      default: return '';
+    }
+  }
+
+  // ------------------------------------------------------------ parts tab
+
+  const ON_COLS = 21;
+  const OFF_COLS = 15;
+  function itemRow(it, onboard) {
+    const linked = linksFor(it.id);
+    const wt = typeof it.unitWt === 'number' ? it.unitWt : it.unitWt || '';
+    return `<tr class="${it.procured ? 'is-procured' : ''}">
+      <td class="sticky-col w-comp"><input type="text" id="c-${it.id}" data-k="item" data-id="${it.id}" data-f="component" value="${valAttr(it.component)}" placeholder="Component" aria-label="Component"></td>
+      <td class="w-part"><input type="text" id="p-${it.id}" data-k="item" data-id="${it.id}" data-f="part" value="${valAttr(it.part)}" placeholder="Part / source" aria-label="Part or source"></td>
+      <td class="w-qty"><input type="number" id="q-${it.id}" step="any" min="0" data-k="item" data-id="${it.id}" data-f="qty" data-t="num" value="${valAttr(it.qty)}" aria-label="Quantity"></td>
+      <td class="w-num"><input type="text" class="numlike" id="w-${it.id}" inputmode="decimal" data-k="item" data-id="${it.id}" data-f="unitWt" data-t="wt" value="${valAttr(wt)}" placeholder="g" aria-label="Unit weight in grams"></td>
+      <td class="calc" data-calc="wt:${it.id}">${calcText('wt:' + it.id)}</td>
+      <td class="w-num"><input type="number" id="fp-${it.id}" step="any" min="0" data-k="item" data-id="${it.id}" data-f="fullPrice" data-t="num" value="${valAttr(it.fullPrice)}" placeholder="${sym().trim()}" aria-label="Pack price"></td>
+      <td class="w-qty"><input type="number" id="pk-${it.id}" step="1" min="1" data-k="item" data-id="${it.id}" data-f="pack" data-t="num" value="${valAttr(it.pack)}" aria-label="Units per pack"></td>
+      <td class="calc" data-calc="unit:${it.id}">${calcText('unit:' + it.id)}</td>
+      <td class="calc" data-calc="cost:${it.id}" title="${valAttr(it.costNote)}">${calcText('cost:' + it.id)}</td>
+      ${onboard ? K.FLAGS.map((f) => `<td class="c flagcol"><input type="checkbox" id="${f.key}-${it.id}" data-k="item" data-id="${it.id}" data-f="${f.key}" data-t="bool" ${it[f.key] ? 'checked' : ''} aria-label="${f.label}" title="${f.label}"></td>`).join('') : ''}
+      <td class="c flagcol"><input type="checkbox" id="cf-${it.id}" data-k="item" data-id="${it.id}" data-f="confirmed" data-t="bool" ${it.confirmed ? 'checked' : ''} aria-label="Confirmed" title="Confirmed"></td>
+      <td class="c flagcol"><input type="checkbox" id="rq-${it.id}" data-k="item" data-id="${it.id}" data-f="reqSent" data-t="bool" ${it.reqSent ? 'checked' : ''} aria-label="Request sent" title="Request sent"></td>
+      <td class="c flagcol"><input type="checkbox" id="pr-${it.id}" data-k="item" data-id="${it.id}" data-f="procured" data-t="bool" data-struct="1" ${it.procured ? 'checked' : ''} aria-label="Procured" title="Procured"></td>
+      <td class="w-store"><input type="text" id="st-${it.id}" data-k="item" data-id="${it.id}" data-f="store" value="${valAttr(it.store)}" placeholder="Store" aria-label="Store"></td>
+      <td class="w-notes"><textarea id="n-${it.id}" rows="1" data-grow data-k="item" data-id="${it.id}" data-f="notes" placeholder="Notes" aria-label="Notes">${esc(it.notes)}</textarea></td>
+      ${onboard ? `<td class="w-act">${linked}</td>` : ''}
+      <td class="w-act">
+        <button type="button" class="icon-btn" data-act="up-item" data-id="${it.id}" title="Move up" aria-label="Move up">↑</button>
+        <button type="button" class="icon-btn" data-act="down-item" data-id="${it.id}" title="Move down" aria-label="Move down">↓</button>
+        <button type="button" class="icon-btn danger" data-act="del-item" data-id="${it.id}" title="Delete part" aria-label="Delete part">✕</button>
+      </td>
+    </tr>`;
+  }
+
+  function linksFor(itemId) {
+    const sup = S.supplies.filter((x) => x.itemId === itemId);
+    const lds = S.loads.filter((x) => x.itemId === itemId);
+    const chips = sup.map((x) => `<button type="button" class="chip link" data-act="tab" data-id="power" title="Power supply">⏚ ${esc(x.name)} ${fx(n(x.vout), 1)} V</button>`)
+      .concat(lds.map((x) => `<button type="button" class="chip link" data-act="tab" data-id="power" title="Load">⚡ ${fx(n(x.watts), 2)} W</button>`));
+    if (!chips.length) chips.push(`<button type="button" class="chip" data-act="item-load" data-id="${itemId}" title="Add this part as a power load">+ load</button><button type="button" class="chip" data-act="item-supply" data-id="${itemId}" title="Use this part as a power supply">+ supply</button>`);
+    return `<div class="chip-row">${chips.join('')}</div>`;
+  }
+
+  function headRow(onboard) {
+    return `<tr>
+      <th class="sticky-col">Component</th><th>Part / Source</th><th class="r">Qty</th><th class="r">Unit g</th><th class="r">Total g</th>
+      <th class="r">Pack price</th><th class="r" title="Units per pack">/pack</th><th class="r">Unit price</th><th class="r">Cost</th>
+      ${onboard ? K.FLAGS.map((f) => `<th class="c" title="${f.label}">${f.short}</th>`).join('') : ''}
+      <th class="c" title="Confirmed">Conf</th><th class="c" title="Request sent">Req</th><th class="c" title="Procured">Got</th>
+      <th>Store</th><th>Notes</th>${onboard ? '<th>Power link</th>' : ''}<th></th></tr>`;
+  }
+
+  function partsTab() {
+    const cats = S.categories.map((c, ci) => `
+      <tr class="cat"><td colspan="${ON_COLS}"><div class="cat-inner">
+        <input type="text" class="cat-name" id="cat-${c.id}" data-k="cat" data-id="${c.id}" data-f="name" value="${valAttr(c.name)}" aria-label="Section name">
+        <span class="num muted" data-calc="catwt:${c.id}">${calcText('catwt:' + c.id)}</span>
+        <span class="num muted" data-calc="catcost:${c.id}">${calcText('catcost:' + c.id)}</span>
+        <span>
+          <button type="button" class="icon-btn" data-act="up-cat" data-id="${c.id}" ${ci === 0 ? 'disabled' : ''} title="Move section up" aria-label="Move section up">↑</button>
+          <button type="button" class="icon-btn" data-act="down-cat" data-id="${c.id}" ${ci === S.categories.length - 1 ? 'disabled' : ''} title="Move section down" aria-label="Move section down">↓</button>
+          <button type="button" class="icon-btn danger" data-act="del-cat" data-id="${c.id}" title="Delete section" aria-label="Delete section">✕</button>
+        </span>
+      </div></td></tr>
+      ${c.items.map((it) => itemRow(it, true)).join('')}
+      <tr class="add"><td colspan="${ON_COLS}"><div class="add-inner"><button type="button" class="btn sm" data-act="add-item" data-id="${c.id}">+ Add part to ${esc(K.titleCase(c.name))}</button></div></td></tr>`).join('');
+
+    const list = (key, label, hint) => `
+      <section>
+        <div class="section-head"><h2>${label}</h2><span class="meta">${hint} · <span data-calc="listcost:${key}">${calcText('listcost:' + key)}</span></span></div>
+        <div class="tbl-wrap"><table class="grid"><thead>${headRow(false)}</thead><tbody>
+          ${S[key].length ? S[key].map((it) => itemRow(it, false)).join('') : `<tr class="empty"><td colspan="${OFF_COLS}">Nothing here yet.</td></tr>`}
+          <tr class="add"><td colspan="${OFF_COLS}"><div class="add-inner"><button type="button" class="btn sm" data-act="add-item" data-id="${key}">+ Add to ${label.toLowerCase()}</button></div></td></tr>
+        </tbody></table></div>
+      </section>`;
+
+    return `<div class="stack">
+      <section>
+        <div class="section-head">
+          <h2>Onboard BOM</h2>
+          <span class="meta">Everything that flies. Tick Acc/Bat/Mot/ESC/Prop so the eCalc weights split correctly.</span>
+        </div>
+        <div class="tbl-wrap"><table class="grid"><thead>${headRow(true)}</thead><tbody>${cats}</tbody></table></div>
+        <div style="margin-top:10px"><button type="button" class="btn sm" data-act="add-cat">+ Add section</button></div>
+      </section>
+      ${list('offboard', 'Offboard BOM', 'Ground station, radios and anything that stays on the ground')}
+      ${list('tooling', 'Tooling', 'Tools and consumables for the build')}
+    </div>`;
+  }
+
+  // ------------------------------------------------------------ power tab
+
+  function itemOptions(sel) {
+    const opts = ['<option value="">— not linked —</option>'];
+    S.categories.forEach((c) => {
+      opts.push(`<optgroup label="${esc(K.titleCase(c.name))}">` + c.items.map((it) => `<option value="${it.id}" ${it.id === sel ? 'selected' : ''}>${esc(K.itemLabel(it))}</option>`).join('') + '</optgroup>');
+    });
+    return opts.join('');
+  }
+  function supplyOptions(sel, exclude) {
+    const blocked = new Set();
+    if (exclude) { // a supply cannot be fed by itself or anything downstream of it
+      blocked.add(exclude);
+      let grew = true;
+      while (grew) { grew = false; S.supplies.forEach((x) => { if (!blocked.has(x.id) && blocked.has(K.supplyParent(S, x))) { blocked.add(x.id); grew = true; } }); }
+    }
+    return `<option value="battery" ${sel === 'battery' || !sel ? 'selected' : ''}>Battery (${fx(n(S.elec.vSupply), 1)} V)</option>` +
+      S.supplies.filter((x) => !blocked.has(x.id)).map((x) => `<option value="${x.id}" ${x.id === sel ? 'selected' : ''}>${esc(x.name)} (${fx(n(x.vout), 1)} V)</option>`).join('');
+  }
+
+  function escCheck() {
+    const e = C.elec;
+    const rating = n(S.elec.escRatingA);
+    if (!rating || e.perMotorA == null) return null;
+    const maxPer = n(S.ecalc.maxA) && e.nMotors ? n(S.ecalc.maxA) / e.nMotors : null;
+    if (maxPer != null) {
+      const r = maxPer / rating;
+      return { cls: status(r, 0.85, 1), text: 'ESC at full throttle: ' + fx(maxPer, 1) + ' A of ' + fx(rating, 0) + ' A per motor (' + pct(r) + ')' };
+    }
+    const r = e.perMotorA / rating;
+    return { cls: status(r, 0.4, 0.6), text: 'ESC at hover: ' + fx(e.perMotorA, 1) + ' A of ' + fx(rating, 0) + ' A per motor (' + pct(r) + ')' };
+  }
+
+  const LIVE = {
+    current() {
+      const e = C.elec;
+      return `<dl class="readout">
+        <div><dt>${e.nMotors || 0}× motors at hover<small>${fx(e.hoverW, 1)} W ÷ ${fx(e.V, 1)} V</small></dt><dd>${fx(e.motorI, 3)} A</dd></div>
+        <div><dt>ESC loss<small>P × (1 − ${fx(n(S.elec.escEff), 0)}%) = ${fx(e.escLossW, 2)} W</small></dt><dd>${fx(e.escLossI, 3)} A</dd></div>
+        <div><dt>Accessories<small>${fx(e.accW, 2)} W incl. converter losses</small></dt><dd>${fx(e.accI, 3)} A</dd></div>
+        <div class="total"><dt>Total from battery</dt><dd>${fx(e.totalI, 3)} A</dd></div>
+      </dl>`;
+    },
+    battery() {
+      const e = C.elec;
+      const hr = e.headroom;
+      const escc = escCheck();
+      return `<dl class="readout">
+        <div><dt>Pack capacity<small>${n(S.battery.cells)}S${n(S.battery.parallel) || 1}P · ${fx(e.energyWh, 1)} Wh</small></dt><dd>${fx(e.packAh, 2)} Ah</dd></div>
+        <div><dt>Usable capacity<small>at ${fx(n(S.battery.maxDischarge), 0)}% max discharge</small></dt><dd>${fx(e.usableAh, 2)} Ah</dd></div>
+        <div><dt>Hover flight time</dt><dd>${e.flightMin == null ? '–' : fx(e.flightMin, 1) + ' min'}</dd></div>
+        <div><dt>Max continuous current<small>${S.battery.cCont ? fx(n(S.battery.cCont), 0) + 'C' : 'set the C-rating'}${e.maxBurstA ? ' · burst ' + fx(e.maxBurstA, 0) + ' A' : ''}</small></dt><dd>${e.maxContA ? fx(e.maxContA, 0) + ' A' : '–'}</dd></div>
+        <div><dt>Hover draw vs continuous rating</dt><dd>${hr == null ? '–' : `<span class="chip ${status(hr, 0.5, 0.8)}">${pct(hr, 1)}</span>`}</dd></div>
+        <div><dt>Voltage sag at hover<small>${fx(n(S.battery.resistance) * 1000, 1)} mΩ/cell</small></dt><dd>${fx(e.sagV, 2)} V → ${fx(e.vLoaded, 2)} V</dd></div>
+        <div><dt>Hover power</dt><dd>${fx(e.powerW, 1)} W</dd></div>
+        ${escc ? `<div><dt>ESC headroom<small>${esc(escc.text)}</small></dt><dd><span class="chip ${escc.cls}">${escc.cls === 'good' ? 'OK' : escc.cls === 'warn' ? 'Tight' : 'Over'}</span></dd></div>` : ''}
+        ${e.twr != null ? `<div><dt>Thrust-to-weight<small>${e.nMotors} × ${fx(n(S.elec.thrustG), 0)} g ÷ ${fx(C.auw, 0)} g</small></dt><dd><span class="chip ${e.twr < 1.6 ? 'bad' : e.twr < 2 ? 'warn' : 'good'}">${fx(e.twr, 2)} : 1</span></dd></div>` : ''}
+      </dl>`;
+    },
+    supW(id) { const nd = supNode(id); return nd ? fx(nd.outW, 2) + ' W' : ''; },
+    supA(id) { const nd = supNode(id); return nd ? fx(nd.outA, 2) + ' A' : ''; },
+    supLoss(id) { const nd = supNode(id); return nd ? fx(nd.lossW, 2) + ' W' : ''; },
+    supU(id) {
+      const nd = supNode(id);
+      if (!nd) return '';
+      const u = nd.util;
+      return u == null ? '<span class="muted small">set max A</span>' : `<div class="meter ${status(u, 0.7, 0.9)}" title="${pct(u)}"><i style="width:${Math.min(100, u * 100)}%"></i></div><span class="small">${pct(u)} of ${fx(nd.maxA, 1)} A</span>`;
+    },
+    loadRail(id) {
+      const l = S.loads.find((x) => x.id === id);
+      if (!l) return '';
+      const sp = K.loadSupply(S, l);
+      const nd = sp === 'battery' ? null : supNode(sp);
+      const railV = nd ? nd.vout : n(S.elec.vSupply);
+      return (railV > 0 ? fx(n(l.watts) / railV, 3) : '–') + ' A @ ' + fx(railV, 1) + ' V';
+    },
+    loadBatt(id) { const l = S.loads.find((x) => x.id === id); return l && C.elec.V > 0 ? fx(n(l.watts) / C.elec.V, 3) + ' A' : '–'; },
+    supplies() {
+      if (!S.supplies.length) return `<tr class="empty"><td colspan="11">No power supplies yet. Add one for each BEC, buck converter or power module, then point loads at it.</td></tr>`;
+      return C.elec.supplies.map((nd) => {
+        const x = nd.supply;
+        return `<tr>
+          <td class="sticky-col w-comp"><input type="text" id="sn-${x.id}" data-k="supply" data-id="${x.id}" data-f="name" data-opts="1" value="${valAttr(x.name)}" aria-label="Supply name"></td>
+          <td class="w-sel"><select id="si-${x.id}" data-k="supply" data-id="${x.id}" data-f="itemId" data-struct="1" aria-label="Linked BOM part">${itemOptions(x.itemId)}</select></td>
+          <td class="w-sel"><select id="sf-${x.id}" data-k="supply" data-id="${x.id}" data-f="from" data-struct="1" aria-label="Fed from">${supplyOptions(x.from, x.id)}</select></td>
+          <td class="w-num"><input type="number" id="sv-${x.id}" step="any" data-k="supply" data-id="${x.id}" data-f="vout" data-t="num" value="${valAttr(x.vout)}" aria-label="Output volts"></td>
+          <td class="w-num"><input type="number" id="se-${x.id}" step="any" min="1" max="100" data-k="supply" data-id="${x.id}" data-f="eff" data-t="num" value="${valAttr(x.eff)}" aria-label="Efficiency percent"></td>
+          <td class="w-num"><input type="number" id="sa-${x.id}" step="any" min="0" data-k="supply" data-id="${x.id}" data-f="maxA" data-t="num" value="${valAttr(x.maxA)}" placeholder="A" aria-label="Max output current"></td>
+          <td class="calc" data-live="supW:${x.id}">${LIVE.supW(x.id)}</td>
+          <td class="calc" data-live="supA:${x.id}">${LIVE.supA(x.id)}</td>
+          <td style="min-width:130px;padding-top:9px" data-live="supU:${x.id}">${LIVE.supU(x.id)}</td>
+          <td class="calc" data-live="supLoss:${x.id}">${LIVE.supLoss(x.id)}</td>
+          <td class="w-act"><button type="button" class="icon-btn danger" data-act="del-supply" data-id="${x.id}" title="Delete supply" aria-label="Delete supply">✕</button></td>
+        </tr>`;
+      }).join('');
+    },
+    tree() {
+      const t = C.elec.tree;
+      const ldNode = (l) => `<li><div class="node ld"><span class="nm">${esc(l.name || '(unnamed load)')}</span><span class="val num">${fx(n(l.watts), 2)} W</span></div></li>`;
+      const supNode = (nd) => {
+        const u = nd.util;
+        return `<li><div class="node sup"><span class="nm">${esc(nd.supply.name)}</span><span class="muted small">${fx(nd.vout, 1)} V · η ${fx(nd.eff, 0)}%</span>
+          ${u != null ? `<span class="chip ${status(u, 0.7, 0.9)}">${fx(nd.outA, 2)} / ${fx(nd.maxA, 1)} A</span>` : ''}
+          <span class="val num">${fx(nd.inW, 2)} W in</span></div>
+          ${nd.loads.length || nd.kids.length ? `<ul>${nd.loads.map(ldNode).join('')}${nd.kids.map(supNode).join('')}</ul>` : ''}</li>`;
+      };
+      return `<div class="tree"><div class="node src"><span class="nm">Battery</span><span class="small">${n(S.battery.cells)}S · ${fx(n(S.elec.vSupply), 1)} V</span><span class="val num">${fx(t.outW + C.elec.hoverW + C.elec.escLossW, 1)} W</span></div>
+        <ul>
+          <li><div class="node ld"><span class="nm">Motors via ESC (hover)</span><span class="val num">${fx(C.elec.hoverW + C.elec.escLossW, 1)} W</span></div></li>
+          ${t.loads.map(ldNode).join('')}${t.kids.map(supNode).join('')}
+        </ul></div>`;
+    },
+  };
+
+  function supNode(id) { return C.elec.supplies.find((x) => x.id === id); }
+
+  function loadRow(l) {
+    const sp = K.loadSupply(S, l);
+    return `<tr>
+      <td class="sticky-col w-comp"><input type="text" id="ln-${l.id}" data-k="load" data-id="${l.id}" data-f="name" value="${valAttr(l.name)}" placeholder="Load name" aria-label="Load name"></td>
+      <td class="w-sel"><select id="li-${l.id}" data-k="load" data-id="${l.id}" data-f="itemId" data-struct="1" aria-label="Linked BOM part">${itemOptions(l.itemId)}</select></td>
+      <td class="w-sel"><select id="ls-${l.id}" data-k="load" data-id="${l.id}" data-f="supply" data-struct="1" aria-label="Powered by">${supplyOptions(sp)}</select></td>
+      <td class="w-num"><input type="number" id="lw-${l.id}" step="any" min="0" data-k="load" data-id="${l.id}" data-f="watts" data-t="num" value="${valAttr(l.watts)}" aria-label="Power in watts"></td>
+      <td class="calc" data-live="loadRail:${l.id}">${LIVE.loadRail(l.id)}</td>
+      <td class="calc" data-live="loadBatt:${l.id}">${LIVE.loadBatt(l.id)}</td>
+      <td class="w-act"><button type="button" class="icon-btn danger" data-act="del-load" data-id="${l.id}" title="Delete load" aria-label="Delete load">✕</button></td>
+    </tr>`;
+  }
+
+  function powerTab() {
+    const b = S.battery, e = S.elec;
+    const fld = (k, f, label, v, opts) => {
+      opts = opts || {};
+      return `<label class="field"><span>${label}</span><input type="${opts.text ? 'text' : 'number'}" id="${k}-${f}" ${opts.text ? '' : 'step="any"'} data-k="${k}" data-f="${f}" ${opts.text ? '' : 'data-t="num"'} ${opts.struct ? 'data-struct="1"' : ''} value="${valAttr(v)}" ${opts.ph ? `placeholder="${esc(opts.ph)}"` : ''}></label>`;
+    };
+    return `<div class="stack">
+      <div class="cols">
+        <section class="card">
+          <header><h2>Battery</h2><span class="muted small">${esc(K.itemLabel(K.allOnboard(S).find((i) => i.batt)) || 'Tick “Bat” on the battery in the parts list')}</span></header>
+          <div class="form">
+            ${fld('batt', 'cells', 'Cells (S)', b.cells, { struct: 1 })}
+            ${fld('batt', 'parallel', 'Parallel (P)', b.parallel)}
+            ${fld('batt', 'capacity', 'Capacity (mAh)', b.capacity)}
+            ${fld('batt', 'cellV', 'Nominal V / cell', b.cellV)}
+            ${fld('batt', 'maxDischarge', 'Max discharge (%)', b.maxDischarge)}
+            ${fld('batt', 'resistance', 'Resistance (Ω / cell)', b.resistance)}
+            ${fld('batt', 'cCont', 'C-rate (cont)', b.cCont)}
+            ${fld('batt', 'cMax', 'C-rate (max)', b.cMax)}
+            <label class="field"><span>Supply voltage (V)</span><div class="with-btn"><input type="number" id="elec-vSupply" step="any" data-k="elec" data-f="vSupply" data-t="num" data-struct="1" value="${valAttr(e.vSupply)}"><button type="button" class="btn sm" data-act="v-nominal" title="Set to cells × nominal volts">${fx(n(b.cells) * n(b.cellV), 1)}</button></div></label>
+          </div>
+        </section>
+        <section class="card">
+          <header><h2>Drive</h2><span class="muted small">Hover power comes from your eCalc run</span></header>
+          <div class="form">
+            ${fld('elec', 'hoverW', 'Motors at hover (W)', e.hoverW, { ph: 'from eCalc' })}
+            ${fld('elec', 'escEff', 'ESC efficiency (%)', e.escEff)}
+            ${fld('elec', 'escRatingA', 'ESC rating (A / motor)', e.escRatingA, { ph: 'e.g. 65' })}
+            ${fld('elec', 'thrustG', 'Max thrust / motor (g)', e.thrustG, { ph: 'optional' })}
+          </div>
+          <div data-live="current">${LIVE.current()}</div>
+        </section>
+        <section class="card">
+          <header><h2>Battery checks</h2></header>
+          <div data-live="battery">${LIVE.battery()}</div>
+        </section>
+      </div>
+
+      <section>
+        <div class="section-head"><h2>Power supplies</h2><span class="meta">BECs, buck converters and power modules. Link each to its part in the BOM.</span></div>
+        <div class="tbl-wrap"><table class="grid">
+          <thead><tr><th class="sticky-col">Supply</th><th>BOM part</th><th>Fed from</th><th class="r">V out</th><th class="r">η %</th><th class="r">Max A</th><th class="r">Load</th><th class="r">Out I</th><th>Utilisation</th><th class="r">Loss</th><th></th></tr></thead>
+          <tbody>${LIVE.supplies()}</tbody>
+        </table></div>
+        <div style="margin-top:10px"><button type="button" class="btn sm" data-act="add-supply">+ Add power supply</button></div>
+      </section>
+
+      <section>
+        <div class="section-head"><h2>Loads</h2><span class="meta">Electronics and what powers them. Watts from the spec sheet; current is worked out at the rail and at the battery.</span></div>
+        <div class="tbl-wrap"><table class="grid">
+          <thead><tr><th class="sticky-col">Load</th><th>BOM part</th><th>Powered by</th><th class="r">Power W</th><th class="r">At rail</th><th class="r">From battery</th><th></th></tr></thead>
+          <tbody>${S.loads.length ? S.loads.map(loadRow).join('') : '<tr class="empty"><td colspan="7">No loads yet. Add the flight controller, companion computer, radios and sensors here.</td></tr>'}</tbody>
+        </table></div>
+        <div style="margin-top:10px"><button type="button" class="btn sm" data-act="add-load">+ Add load</button></div>
+      </section>
+
+      <section class="card">
+        <header><h2>Power distribution</h2><span class="muted small">Watts drawn at each stage, losses included</span></header>
+        <div data-live="tree">${LIVE.tree()}</div>
+      </section>
+    </div>`;
+  }
+
+  // ------------------------------------------------------------ eCalc tab
+
+  function ecalcTab() {
+    const ei = C.ecalcIn;
+    const row = (label, sub, v, unit, d) => `<div><dt>${label}${sub ? `<small>${sub}</small>` : ''}</dt><dd>${fx(v, d == null ? 1 : d)} ${unit}<button type="button" class="icon-btn copy" data-act="copy" data-id="${fx(v, d == null ? 1 : d).replace(/,/g, '')}" title="Copy value" aria-label="Copy ${esc(label)}">⧉</button></dd></div>`;
+    const b = S.battery;
+    const bf = (key, label, inner) => `<tr><td>${label}</td><td class="w-num">${inner}</td><td><input type="text" id="fn-${key}" data-k="fnote" data-f="${key}" value="${valAttr(b.fieldNotes[key])}" placeholder="Notes" aria-label="${label} notes"></td></tr>`;
+    const bnum = (f, v) => `<input type="number" id="eb-${f}" step="any" data-k="batt" data-f="${f}" data-t="num" value="${valAttr(v)}" aria-label="${f}">`;
+    return `<div class="stack">
+      <div class="cols">
+        <section class="card">
+          <header><h2>eCalc inputs</h2><span class="muted small">Weights in grams, from the parts list</span></header>
+          <p class="hint">eCalc adds accessory weight on top of model weight. Enter <b>Model weight incl. drive</b> (AUW minus accessories) and the accessories separately, or eCalc will count them twice.</p>
+          <dl class="readout">
+            ${row('Model weight incl. drive', 'AUW − accessories', ei.inclDrive, 'g')}
+            ${row('Accessories', 'parts ticked “Acc”', ei.acc, 'g')}
+            ${row('Accessory current drain', 'all loads incl. converter losses', C.elec.accI, 'A', 2)}
+            ${row('AUW', 'everything onboard', ei.auw, 'g')}
+            ${row('Model weight w/o drive', 'AUW − battery, motors, ESC, props', ei.woDrive, 'g')}
+            ${row('Model weight w/o battery', '', ei.woBatt, 'g')}
+            ${row('Drive', 'battery + motors + ESC + props', ei.drive, 'g')}
+            ${row('Battery cell weight', C.cells + ' cells', C.cellW, 'g')}
+          </dl>
+        </section>
+        <section class="card">
+          <header><h2>eCalc outputs</h2><span class="muted small">Copy these in after each run</span></header>
+          <div class="form">
+            ${K.ECALC_OUTPUTS.map((f) => {
+              const k = f.key === 'hoverW' ? 'elec' : 'ecalc';
+              const v = f.key === 'hoverW' ? S.elec.hoverW : S.ecalc[f.key];
+              return `<label class="field"><span>${esc(f.label)}</span><input type="number" step="any" id="eo-${f.key}" data-k="${k}" data-f="${f.key}" data-t="num" value="${valAttr(v)}"></label>`;
+            }).join('')}
+          </div>
+          <div data-live="auwcheck">${LIVE.auwcheck()}</div>
+        </section>
+      </div>
+      <section class="card">
+        <header><h2>Battery spec</h2><span class="muted small">Shared with the Power tab</span></header>
+        <div class="cols">
+          <div class="field"><span>For the free version of eCalc</span>
+            <div class="with-btn"><input type="text" id="batt-freeSpec" data-k="batt" data-f="freeSpec" value="${valAttr(b.freeSpec)}" placeholder="${esc(K.freeSpecText(S))}"><button type="button" class="btn sm" data-act="gen-free">Fill in</button></div>
+          </div>
+        </div>
+        <div class="tbl-wrap"><table class="grid">
+          <thead><tr><th>Field (paid version)</th><th class="r">Value</th><th>Notes</th></tr></thead>
+          <tbody>
+            ${bf('type', 'Type', `<input type="text" id="eb-type" data-k="batt" data-f="type" value="${valAttr(b.type)}" aria-label="Type">`)}
+            ${bf('config', 'Configuration', `<span class="num">${n(b.cells)}S ${n(b.parallel) || 1}P</span>`)}
+            ${bf('capacity', 'Cell capacity (mAh)', bnum('capacity', b.capacity))}
+            ${bf('maxDischarge', 'Max discharge (%)', bnum('maxDischarge', b.maxDischarge))}
+            ${bf('resistance', 'Resistance (Ω)', bnum('resistance', b.resistance))}
+            ${bf('cellV', 'Voltage (V / cell)', bnum('cellV', b.cellV))}
+            ${bf('cCont', 'C-rate (cont)', bnum('cCont', b.cCont))}
+            ${bf('cMax', 'C-rate (max)', bnum('cMax', b.cMax))}
+            ${bf('cellWt', 'Weight (g / cell)', `<span class="num">${fx(C.cellW, 1)}</span>`)}
+          </tbody>
+        </table></div>
+        <div>
+          <h3 style="margin-bottom:8px">Battery notes</h3>
+          ${noteList('bnote', b.notes, 'Add battery note')}
+        </div>
+      </section>
+      <section class="card">
+        <header><h2>Build notes</h2><span class="muted small">Saved to the NOTES column of the spreadsheet</span></header>
+        ${noteList('note', S.notes, 'Add note')}
+      </section>
+    </div>`;
+  }
+  LIVE.auwcheck = function () {
+    const rep = n(S.ecalc.auw);
+    if (!rep) return '<p class="hint">Enter eCalc’s all-up weight to check it against the BOM.</p>';
+    const diff = rep - C.auw;
+    const r = Math.abs(diff) / (C.auw || 1);
+    const cls = r > 0.05 ? 'bad' : r > 0.02 ? 'warn' : 'good';
+    return `<dl class="readout">
+      <div><dt>BOM all-up weight</dt><dd>${fx(C.auw, 1)} g</dd></div>
+      <div><dt>eCalc all-up weight</dt><dd>${fx(rep, 1)} g</dd></div>
+      <div class="total"><dt>Difference</dt><dd><span class="chip ${cls}">${diff > 0 ? '+' : ''}${fx(diff, 1)} g</span></dd></div>
+    </dl>${cls === 'bad' && Math.abs(diff - C.accW) < Math.abs(diff) * 0.5 ? '<p class="hint">The gap is close to your accessory weight, which usually means accessories were counted twice. Re-run eCalc with model weight = AUW − accessories.</p>' : cls !== 'good' ? '<p class="hint">Weights in eCalc no longer match the BOM. Re-run eCalc with the inputs on the left.</p>' : ''}`;
+  };
+
+  function noteList(kind, arr, addLabel) {
+    return `<div class="note-list">${arr.map((t, i) => `<div class="note"><textarea id="${kind}-${i}" rows="1" data-grow data-k="${kind}" data-id="${i}" aria-label="Note ${i + 1}">${esc(t)}</textarea><button type="button" class="icon-btn danger" data-act="del-${kind}" data-id="${i}" title="Delete note" aria-label="Delete note">✕</button></div>`).join('')}
+      <div><button type="button" class="btn sm" data-act="add-${kind}">+ ${addLabel}</button></div></div>`;
+  }
+
+  // ------------------------------------------------------------ breakdown tab
+
+  function bars(rows, fmt) {
+    const max = Math.max.apply(null, rows.map((r) => r[1]).concat([0])) || 1;
+    const tot = rows.reduce((a, r) => a + r[1], 0) || 1;
+    return `<div class="bars">${rows.map(([lab, v]) => `<div class="bar-row"><span>${esc(lab)}</span><span class="track"><i style="width:${(v / max) * 100}%"></i></span><span class="v">${fmt(v)}<small>${pct(v / tot)}</small></span></div>`).join('')}</div>`;
+  }
+  function breakdownTab() {
+    const onboard = K.allOnboard(S);
+    const procured = onboard.filter((i) => i.procured).length;
+    const requested = onboard.filter((i) => i.reqSent).length;
+    const confirmed = onboard.filter((i) => i.confirmed).length;
+    const noWt = onboard.filter((i) => !K.isNum(i.unitWt) && !(typeof i.unitWt === 'string' && i.unitWt.trim() !== '' && isFinite(+i.unitWt)));
+    const noPrice = onboard.filter((i) => i.fullPrice == null || i.fullPrice === '');
+    const flags = [['Battery', 'batt'], ['Motors', 'motor'], ['ESC', 'esc'], ['Props', 'prop'], ['Accessories', 'acc']].map(([l, k]) => [l, onboard.filter((i) => i[k]).reduce((a, i) => a + K.itemWt(i), 0)]);
+    const unflagged = C.auw - flags.reduce((a, f) => a + f[1], 0);
+    return `<div class="cols">
+      <section class="card"><header><h2>Weight by section</h2><span class="num">${fx(C.auw, 1)} g AUW</span></header>${bars(C.cats.map((c) => [K.titleCase(c.name), c.wt]), (v) => fx(v, 1) + ' g')}</section>
+      <section class="card"><header><h2>Cost by section</h2><span class="num">${money(C.cost.build)}</span></header>${bars(C.cats.map((c) => [K.titleCase(c.name), c.cost]), money)}
+        <dl class="readout">
+          <div><dt>Tooling</dt><dd>${money(C.cost.tooling)}</dd></div>
+          <div><dt>Offboard</dt><dd>${money(C.cost.offboard)}</dd></div>
+          <div class="total"><dt>Everything</dt><dd>${money(C.cost.build + C.cost.other)}</dd></div>
+        </dl></section>
+      <section class="card"><header><h2>Weight by role</h2><span class="muted small">From the Acc/Bat/Mot/ESC/Prop ticks</span></header>${bars(flags.concat([['Frame & other', Math.max(0, unflagged)]]), (v) => fx(v, 1) + ' g')}</section>
+      <section class="card"><header><h2>Procurement</h2></header>
+        <dl class="readout">
+          <div><dt>Confirmed</dt><dd>${confirmed} / ${onboard.length}</dd></div>
+          <div><dt>Request sent</dt><dd>${requested} / ${onboard.length}</dd></div>
+          <div><dt>Procured</dt><dd>${procured} / ${onboard.length}</dd></div>
+          <div class="total"><dt>Still to buy (incl. tooling)<small>whole packs at pack price</small></dt><dd>${money(C.cost.toProcure)}</dd></div>
+        </dl>
+        ${noWt.length ? `<p class="hint">No weight yet: ${noWt.map((i) => esc(i.component || i.part)).join(', ')}.</p>` : ''}
+        ${noPrice.length ? `<p class="hint">No price yet: ${noPrice.map((i) => esc(i.component || i.part)).join(', ')}.</p>` : ''}
+      </section>
+    </div>`;
+  }
+
+  // ------------------------------------------------------------ events
+
+  function parseVal(el) {
+    const t = el.getAttribute('data-t');
+    if (t === 'bool') return el.checked;
+    if (t === 'num') return el.value === '' ? null : parseFloat(el.value);
+    if (t === 'wt') { const v = el.value.trim(); return v === '' ? null : isFinite(+v) ? +v : v; }
+    return el.value;
+  }
+
+  function onEdit(e) {
+    const el = e.target;
+    const kind = el.getAttribute && el.getAttribute('data-k');
+    if (!kind) return;
+    if (el.tagName === 'TEXTAREA' && el.hasAttribute('data-grow')) grow(el);
+    const v = parseVal(el);
+    if (kind === 'note' || kind === 'bnote') {
+      const arr = kind === 'note' ? S.notes : S.battery.notes;
+      arr[+el.getAttribute('data-id')] = v;
+    } else {
+      const obj = target(kind, el.getAttribute('data-id'));
+      if (!obj) return;
+      obj[el.getAttribute('data-f')] = v;
+    }
+    saveDraft();
+    const structural = el.hasAttribute('data-struct') && e.type === 'change';
+    if (structural) { const y = window.scrollY; renderAll(); window.scrollTo(0, y); } else refresh();
+    if (el.hasAttribute('data-opts')) refreshSupplyOptions();
+  }
+
+  function refreshSupplyOptions() {
+    root.querySelectorAll('select[data-f="supply"], select[data-f="from"]').forEach((sel) => {
+      const isFrom = sel.getAttribute('data-f') === 'from';
+      const obj = target(isFrom ? 'supply' : 'load', sel.getAttribute('data-id'));
+      if (obj) sel.innerHTML = supplyOptions(isFrom ? obj.from : K.loadSupply(S, obj), isFrom ? obj.id : null);
+    });
+  }
+
+  function moveItem(id, dir) {
+    const f = findItem(id);
+    if (!f) return;
+    const j = f.i + dir;
+    if (j >= 0 && j < f.list.length) { const [x] = f.list.splice(f.i, 1); f.list.splice(j, 0, x); return; }
+    if (!f.cat) return; // offboard/tooling: stop at the ends
+    const ci = S.categories.indexOf(f.cat) + dir;
+    if (ci < 0 || ci >= S.categories.length) return;
+    const [x] = f.list.splice(f.i, 1);
+    if (dir < 0) S.categories[ci].items.push(x); else S.categories[ci].items.unshift(x);
+  }
+
+  function actions(act, id, btn) {
+    switch (act) {
+      case 'tab': tab = id; renderTabs(); renderBody(); try { localStorage.setItem(STORE_KEY + '-tab', tab); } catch (e) { /* ignore */ } return false;
+      case 'import': root.querySelector('#bom-file').click(); return false;
+      case 'export': exportXlsx(); return false;
+      case 'example': snapshot(); S = K.normalize(JSON.parse(JSON.stringify(SAMPLE))); toast('Loaded the example build', { undo: true }); break;
+      case 'blank': snapshot(); S = K.newState(); toast('Started a blank build', { undo: true }); break;
+      case 'undo': if (undoSnap) { S = K.normalize(JSON.parse(undoSnap)); undoSnap = null; root.querySelector('[data-toast]').hidden = true; } break;
+      case 'add-item': {
+        const it = K.newItem();
+        if (id === 'offboard' || id === 'tooling') S[id].push(it); else { const c = S.categories.find((x) => x.id === id); if (c) c.items.push(it); }
+        commitStructure();
+        const el = root.querySelector('#c-' + it.id);
+        if (el) el.focus();
+        return false;
+      }
+      case 'del-item': {
+        const f = findItem(id);
+        if (!f) return false;
+        snapshot();
+        const [gone] = f.list.splice(f.i, 1);
+        S.loads.forEach((l) => { if (l.itemId === id) l.itemId = null; });
+        S.supplies.forEach((x) => { if (x.itemId === id) x.itemId = null; });
+        toast('Deleted ' + (gone.component || gone.part || 'part'), { undo: true });
+        break;
+      }
+      case 'up-item': moveItem(id, -1); break;
+      case 'down-item': moveItem(id, 1); break;
+      case 'add-cat': { const c = K.newCategory('NEW SECTION'); S.categories.push(c); commitStructure(); const el = root.querySelector('#cat-' + c.id); if (el) { el.focus(); el.select(); } return false; }
+      case 'del-cat': {
+        const i = S.categories.findIndex((c) => c.id === id);
+        if (i < 0) return false;
+        snapshot();
+        const [c] = S.categories.splice(i, 1);
+        if (!S.categories.length) S.categories.push(K.newCategory('GENERAL'));
+        toast('Deleted section ' + c.name + (c.items.length ? ' and its ' + c.items.length + ' parts' : ''), { undo: true });
+        break;
+      }
+      case 'up-cat': case 'down-cat': {
+        const i = S.categories.findIndex((c) => c.id === id), j = i + (act === 'up-cat' ? -1 : 1);
+        if (i >= 0 && j >= 0 && j < S.categories.length) { const [c] = S.categories.splice(i, 1); S.categories.splice(j, 0, c); }
+        break;
+      }
+      case 'add-supply': S.supplies.push(K.newSupply({ name: 'Supply ' + (S.supplies.length + 1) })); break;
+      case 'del-supply': {
+        snapshot();
+        const sp = S.supplies.find((x) => x.id === id);
+        S.supplies = S.supplies.filter((x) => x.id !== id);
+        S.loads.forEach((l) => { if (l.supply === id) l.supply = sp ? sp.from : 'battery'; });
+        S.supplies.forEach((x) => { if (x.from === id) x.from = sp ? sp.from : 'battery'; });
+        toast('Deleted ' + (sp ? sp.name : 'supply') + '. Its loads now draw from what fed it.', { undo: true });
+        break;
+      }
+      case 'add-load': S.loads.push(K.newLoad({ name: '' })); break;
+      case 'del-load': snapshot(); S.loads = S.loads.filter((x) => x.id !== id); toast('Deleted load', { undo: true }); break;
+      case 'item-load': {
+        const it = getItem(id);
+        S.loads.push(K.newLoad({ name: it ? it.component || it.part : '', itemId: id, watts: 0 }));
+        tab = 'power';
+        toast('Added ' + (it ? it.component || it.part : 'part') + ' as a load. Enter its power in watts.');
+        break;
+      }
+      case 'item-supply': {
+        const it = getItem(id);
+        const m = it ? /(\d+(?:\.\d+)?)\s*V\b(?:\s+(\d+(?:\.\d+)?)\s*A\b)?/i.exec((it.notes || '') + ' ' + (it.part || '')) : null;
+        S.supplies.push(K.newSupply({ name: it ? it.component || it.part : 'Supply', itemId: id, vout: m ? +m[1] : 5, maxA: m && m[2] ? +m[2] : null }));
+        tab = 'power';
+        toast('Added ' + (it ? it.component || it.part : 'part') + ' as a power supply.');
+        break;
+      }
+      case 'v-nominal': S.elec.vSupply = +(n(S.battery.cells) * n(S.battery.cellV)).toFixed(2); break;
+      case 'gen-free': S.battery.freeSpec = K.freeSpecText(S); break;
+      case 'add-note': S.notes.push(''); break;
+      case 'del-note': snapshot(); S.notes.splice(+id, 1); break;
+      case 'add-bnote': S.battery.notes.push(''); break;
+      case 'del-bnote': snapshot(); S.battery.notes.splice(+id, 1); break;
+      case 'copy': {
+        const done = () => { const o = btn.textContent; btn.textContent = '✓'; setTimeout(() => { btn.textContent = o; }, 1200); };
+        try { navigator.clipboard.writeText(id).then(done, () => toast('Copy this value: ' + id)); } catch (e) { toast('Copy this value: ' + id); }
+        return false;
+      }
+      default: return false;
+    }
+    return true;
+  }
+
+  function commitStructure() { saveDraft(); const y = window.scrollY; renderAll(); window.scrollTo(0, y); }
+
+  root.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-act]');
+    if (!btn || !root.contains(btn) || btn.disabled) return;
+    if (actions(btn.getAttribute('data-act'), btn.getAttribute('data-id'), btn)) commitStructure();
+  });
+  root.addEventListener('input', (e) => { if (e.target.type !== 'checkbox' && e.target.tagName !== 'SELECT') onEdit(e); });
+  root.addEventListener('change', (e) => {
+    if (e.target.id === 'bom-file') { const f = e.target.files[0]; e.target.value = ''; if (f) importFile(f); return; }
+    if (e.target.type === 'checkbox' || e.target.tagName === 'SELECT' || e.target.hasAttribute('data-struct')) onEdit(e);
+  });
+  ['dragenter', 'dragover'].forEach((t) => root.addEventListener(t, (e) => { if (e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files')) { e.preventDefault(); root.classList.add('drop-active'); } }));
+  ['dragleave', 'drop'].forEach((t) => root.addEventListener(t, (e) => { if (t === 'dragleave' && root.contains(e.relatedTarget)) return; root.classList.remove('drop-active'); }));
+  root.addEventListener('drop', (e) => { e.preventDefault(); const f = e.dataTransfer.files && e.dataTransfer.files[0]; if (f) importFile(f); });
+
+  // ------------------------------------------------------------ file I/O
+
+  function needExcel() {
+    if (window.ExcelJS) return true;
+    toast('The spreadsheet library did not load. Check your connection and reload the page.', { err: true });
+    return false;
+  }
+
+  function importFile(file) {
+    if (!/\.xlsx$/i.test(file.name)) { toast('Open an .xlsx file. Save other formats (Google Sheets, .xls, Numbers) as Excel .xlsx first.', { err: true }); return; }
+    if (!needExcel()) return;
+    const reader = new FileReader();
+    reader.onload = async () => {
+      try {
+        const next = await K.importXlsx(window.ExcelJS, reader.result);
+        snapshot();
+        S = next;
+        commitStructure();
+        const parts = K.allOnboard(S).length;
+        toast('Opened ' + file.name + ': ' + parts + ' parts, ' + S.loads.length + ' loads, ' + S.supplies.length + ' supplies', { undo: true });
+      } catch (err) {
+        toast('Could not read ' + file.name + '. ' + (err && err.message ? err.message : '') + ' The sheet needs an ONBOARD BOM title with a Component header row under it.', { err: true });
+      }
+    };
+    reader.onerror = () => toast('Could not read ' + file.name + '.', { err: true });
+    reader.readAsArrayBuffer(file);
+  }
+
+  async function exportXlsx() {
+    if (!needExcel()) return;
+    try {
+      const wb = K.buildWorkbook(window.ExcelJS, S);
+      const buf = await wb.xlsx.writeBuffer();
+      const blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const name = ((S.meta.title || 'BOM').normalize('NFKD').replace(/[^\w .()-]+/g, '-').replace(/\s*-[\s-]*/g, '-').replace(/\s+/g, ' ').replace(/^[-\s]+|[-\s]+$/g, '') || 'BOM') + '.xlsx';
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+      toast('Downloaded ' + name);
+    } catch (err) {
+      toast('Could not build the spreadsheet: ' + (err && err.message ? err.message : err), { err: true });
+    }
+  }
+
+  // ------------------------------------------------------------ boot
+
+  try { const t = localStorage.getItem(STORE_KEY + '-tab'); if (t && ['parts', 'power', 'ecalc', 'breakdown'].includes(t)) tab = t; } catch (e) { /* ignore */ }
+  const hash = (location.hash || '').replace('#', '');
+  if (['parts', 'power', 'ecalc', 'breakdown'].includes(hash)) tab = hash;
+  shell();
+  renderAll();
+  setSaved(loadDraft() ? 'Saved in this browser' : 'Example build loaded — edit it, open your own spreadsheet, or start blank');
+})();
+</script>
+<!-- BOM BUILDER EMBED END -->
